@@ -65,7 +65,7 @@ export class SigninContainerComponent implements OnInit {
   }
 
   public signInUser(): void {
-    console.log(this.signInFormGroup.value);
+    this.userSigninService.signInUser(this.signInFormGroup.value);
   }
 
   public registerNewUser(): void {

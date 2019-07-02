@@ -7,10 +7,16 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomNgMaterialModule } from './common/custom-ng-material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PlatformContainerComponent } from './components/platform-container/platform-container.component';
+import { SigninContainerComponent } from './components/platform-container/signin-container/signin-container.component';
+import { MainPanelComponent } from './components/platform-container/main-panel/main-panel.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PlatformContainerComponent,
+    SigninContainerComponent,
+    MainPanelComponent
   ],
   imports: [
     BrowserModule,

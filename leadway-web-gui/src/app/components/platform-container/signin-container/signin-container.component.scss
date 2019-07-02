@@ -1,0 +1,63 @@
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 17px;
+}
+
+
+.sign-in-header {
+  font-weight: bold;
+  color: #25315B;
+}
+
+.form-container{
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 2;
+
+  background-color: white;
+  margin: 30px;
+  padding: 30px;
+  border-radius: 14px;
+  opacity: 0.9;
+}
+
+.signin-container{
+  min-width: 100%;
+  min-height: 100%;
+  width: 100%;
+  height: 100%;
+
+  // css grids
+  display: grid;
+  grid-template-rows: 100%;
+  grid-template-columns: 73% 27%;
+
+  background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ),
+    url('../../../../assets/business.jpg');
+}
+
+.sign-in-button{
+  background-color: lightblue;
+  font-weight: bold;
+}
+
+.sign-up-button {
+  color: blue;
+  font-weight: bold;
+}
+
+.sign-up-button:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.form-footer {
+  margin-top: 30px;
+  font-size: 18px;
+}

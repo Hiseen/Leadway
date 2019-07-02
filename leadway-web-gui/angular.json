@@ -62,7 +62,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "leadway-web-gui:build"
+            "browserTarget": "leadway-web-gui:build",
+            "proxyConfig": "proxy.config.json"
           },
           "configurations": {
             "production": {

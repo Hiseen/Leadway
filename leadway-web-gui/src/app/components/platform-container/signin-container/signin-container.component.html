@@ -1,6 +1,6 @@
 <div class="signin-container">
   <div class="form-container">
-    <form [formGroup]="signInFormGroup">
+    <form *ngIf="signInNow" [formGroup]="signInFormGroup">
       <h1 class="sign-in-header">Leadway</h1>
       <mat-form-field appearance="outline">
         <mat-label>Enter your email</mat-label>
@@ -15,7 +15,7 @@
           Email is <strong>required</strong>.
         </mat-error>
         <button mat-button *ngIf="signInFormGroup.value.email" matSuffix mat-icon-button
-          aria-label="Clear" (click)="resetEmail()">
+          aria-label="Clear" (click)="resetSignInEmail()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>
@@ -28,16 +28,54 @@
           Password is <strong>required</strong>.
         </mat-error>
         <button mat-button *ngIf="signInFormGroup.value.password" matSuffix mat-icon-button
-          aria-label="Clear" (click)="resetPassword()">
+          aria-label="Clear" (click)="resetSignInPassword()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>
-      <button class="sign-in-button" mat-stroked-button type="submit">Sign In</button>
+      <button class="sign-in-button" mat-stroked-button type="submit" (click)="signInUser()">Sign In</button>
+      <div class="form-footer">
+        New to Leadway? <a class="sign-up-button" (click)="signUpToggle()">Sign Up Now!</a>
+      </div>
     </form>
 
-    <div class="form-footer">
-      New to Leadway? <a class="sign-up-button">Sign Up Now!</a>
-    </div>
+    <form *ngIf="!signInNow" [formGroup]="signUpFormGroup">
+      <h1 class="sign-in-header">Leadway</h1>
+      <mat-form-field appearance="outline">
+        <mat-label>Enter your email</mat-label>
+        <input matInput placeholder="Email" type="email" name="email" formControlName="email" required>
+        <mat-error class="error-message" *ngIf="signUpFormGroup.get('email').hasError('email')
+          && !signUpFormGroup.get('email').hasError('required')
+          && (signUpFormGroup.get('email').dirty || signUpFormGroup.get('email').touched)">
+          Please enter a valid email address
+        </mat-error>
+        <mat-error class="error-message" *ngIf="signUpFormGroup.get('email').hasError('required')
+          && (signUpFormGroup.get('email').dirty || signUpFormGroup.get('email').touched)">
+          Email is <strong>required</strong>.
+        </mat-error>
+        <button mat-button *ngIf="signUpFormGroup.value.email" matSuffix mat-icon-button
+          aria-label="Clear" (click)="resetSignInEmail()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Enter your password</mat-label>
+        <input matInput placeholder="Password" type="password" name="password"
+          formControlName="password" required>
+        <mat-error class="error-message" *ngIf="signUpFormGroup.get('password').hasError('required')
+          && (signUpFormGroup.get('password').dirty || signUpFormGroup.get('password').touched)">
+          Password is <strong>required</strong>.
+        </mat-error>
+        <button mat-button *ngIf="signUpFormGroup.value.password" matSuffix mat-icon-button
+          aria-label="Clear" (click)="resetSignInPassword()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+      <button class="sign-in-button" mat-stroked-button type="submit" (click)="registerNewUser()">
+        Register</button>
+      <div class="form-footer">
+          Back to <a class="sign-up-button" (click)="signUpToggle()">Sign In.</a>
+      </div>
+    </form>
   </div>
 
 </div>

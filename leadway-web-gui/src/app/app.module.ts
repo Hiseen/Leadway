@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlatformContainerComponent } from './components/platform-container/platform-container.component';
 import { SigninContainerComponent } from './components/platform-container/signin-container/signin-container.component';
 import { MainPanelComponent } from './components/platform-container/main-panel/main-panel.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { MainPanelComponent } from './components/platform-container/main-panel/m
     BrowserAnimationsModule,
     CustomNgMaterialModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

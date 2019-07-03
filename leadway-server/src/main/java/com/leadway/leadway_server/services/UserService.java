@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.mail.MessagingException;
 
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private MailService mailService;
 	
 	private byte[] salt = new byte[16];
 	private SecretKeyFactory factory;
@@ -66,10 +70,15 @@ public class UserService {
 			newUser.setPassword(encryptedPassword);
 			
 			userRepository.save(newUser);
-			
+
+			try {
+				mailService.sendVerificationMailTo(userEmail, newUser.getId());
+			}
+			catch(MessagingException e) {
+				e.printStackTrace();
+			}
 			result.put("code", 0);
 			System.out.println("Email registered");
-
 			return result;	
 		}
 	}
@@ -98,10 +107,45 @@ public class UserService {
 			return result;
 		}
 	}
-	
+
+	public ObjectNode verifyUser(String code) {
+		ObjectNode result = new ObjectMapper().createObjectNode();
+		long id=0;
+		try {
+			id = Long.parseLong(code);
+		}
+		catch(NumberFormatException e) {
+			result.put("code",1);
+			System.out.println("invalid code received! code = "+code);
+			return result;
+		}
+		List<LeadwayUser> users=userRepository.findById(id);
+		if (users == null || users.size() == 0) {
+			result.put("code", 1);
+			System.out.println("no user found! code = "+code);
+		} else if(users.size()>1){
+			result.put("code", 1);
+			System.out.println("more than 1 user found! code = "+code);
+		}
+		else{
+			LeadwayUser foundUser = users.get(0);
+			if(foundUser.getType()!=0) {
+				System.out.println("user already verified! code = "+code);
+				result.put("code", 1);
+			}else{
+				foundUser.setType(1);
+				userRepository.save(foundUser);
+				System.out.println("user verified! code = "+code);
+				result.put("code", 0);
+			}
+
+		}
+		return result;
+	}
+
 	
 	// testings
-	
+
 	public void addUser() {
 		LeadwayUser newUser = new LeadwayUser(
 				0, "henry@google.com", "henrypassword",

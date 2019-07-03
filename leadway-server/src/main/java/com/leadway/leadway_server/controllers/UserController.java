@@ -4,18 +4,16 @@ import java.io.IOException;
 import java.security.spec.InvalidKeySpecException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.leadway.leadway_server.services.UserService;
 
+
 @RestController
 public class UserController {
-	
+
 	@Autowired
 	private UserService service;
 	
@@ -33,6 +31,11 @@ public class UserController {
 		System.out.println("Sign In");
 		System.out.println(signInForm);
 		return service.loginUser(signInForm);
+	}
+
+	@RequestMapping(method=RequestMethod.GET, value="/verify")
+	public ObjectNode verifyUser(@RequestParam("code") String code){
+		return service.verifyUser(code);
 	}
 	
 }

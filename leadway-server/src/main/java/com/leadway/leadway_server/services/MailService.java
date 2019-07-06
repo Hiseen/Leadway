@@ -4,6 +4,7 @@ package com.leadway.leadway_server.services;
 import org.springframework.stereotype.Component;
 
 import java.util.Properties;
+import java.util.UUID;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -14,7 +15,7 @@ public class MailService {
     private Session mailSession;
     private String hostname = "http://localhost:8080";
     private String senderEmail = "121989255@qq.com";
-    private String authToken = "";
+    private String authToken = "<paste my authToken here>";
 
     private MailService() {
         Properties mailServerProperties;
@@ -31,7 +32,7 @@ public class MailService {
                     }});
     }
 
-    void sendVerificationMailTo(String email, long verificationCode)throws MessagingException {
+    void sendVerificationMailTo(String email, UUID verificationCode)throws MessagingException {
         MimeMessage message = new MimeMessage(mailSession);
         message.setFrom(new InternetAddress(senderEmail));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));

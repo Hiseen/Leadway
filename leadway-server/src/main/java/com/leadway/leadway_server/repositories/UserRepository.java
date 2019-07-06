@@ -13,4 +13,5 @@ public interface UserRepository extends CrudRepository<LeadwayUser, Long> {
 	List<LeadwayUser> findByEmailAndPassword(String email, String password);
 
 	List<LeadwayUser> findById(long id);
+
 }

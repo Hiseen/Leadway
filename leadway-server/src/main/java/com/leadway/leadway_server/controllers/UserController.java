@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.leadway.leadway_server.services.UserService;
 
+import javax.mail.MessagingException;
+
 
 @RestController
 public class UserController {
@@ -18,7 +20,7 @@ public class UserController {
 	private UserService service;
 	
 	@RequestMapping(method=RequestMethod.POST, value="/register")
-	public ObjectNode register(@RequestBody String request) throws IOException, InvalidKeySpecException {		
+	public ObjectNode register(@RequestBody String request) throws IOException, InvalidKeySpecException, MessagingException {
 		ObjectNode signUpForm = (ObjectNode) new ObjectMapper().readTree(request);
 		System.out.println("Sign Up");
 		System.out.println(signUpForm);

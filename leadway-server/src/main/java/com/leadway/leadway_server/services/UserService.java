@@ -6,6 +6,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -34,6 +35,8 @@ public class UserService {
 	private SecretKeyFactory factory;
 	private int bcryptIterations = 65536;
 	private int keyLength = 128;
+	private final long frontMask=2478915738594627173L;
+	private final long backMask=7592345738492835728L;
 	
 	public UserService() throws NoSuchAlgorithmException {
 		// generating PBKDF2 salts and factory
@@ -42,7 +45,7 @@ public class UserService {
 		factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 	}
 	
-	public ObjectNode createNewUserEntities(ObjectNode signUpForm) throws InvalidKeySpecException {
+	public ObjectNode createNewUserEntities(ObjectNode signUpForm) throws InvalidKeySpecException, MessagingException {
 		ObjectNode result = new ObjectMapper().createObjectNode();
 
 		LeadwayUser newUser = new LeadwayUser();
@@ -65,18 +68,14 @@ public class UserService {
 			byte[] hash = factory.generateSecret(spec).getEncoded();
 			
 			String encryptedPassword = Hex.encodeHexString(hash);
-			
+
 			newUser.setEmail(userEmail);
 			newUser.setPassword(encryptedPassword);
-			
+			long privateKey=System.currentTimeMillis();
+			newUser.setPrivateKey(privateKey);
 			userRepository.save(newUser);
-
-			try {
-				mailService.sendVerificationMailTo(userEmail, newUser.getId());
-			}
-			catch(MessagingException e) {
-				e.printStackTrace();
-			}
+			UUID uuid=new UUID(newUser.getId()^frontMask,privateKey^backMask);
+			mailService.sendVerificationMailTo(userEmail, uuid);
 			result.put("code", 0);
 			System.out.println("Email registered");
 			return result;	
@@ -110,15 +109,17 @@ public class UserService {
 
 	public ObjectNode verifyUser(String code) {
 		ObjectNode result = new ObjectMapper().createObjectNode();
-		long id=0;
+		UUID uuid;
 		try {
-			id = Long.parseLong(code);
+			uuid = UUID.fromString(code);
 		}
 		catch(NumberFormatException e) {
 			result.put("code",1);
 			System.out.println("invalid code received! code = "+code);
 			return result;
 		}
+		long id=uuid.getMostSignificantBits()^frontMask;
+		long privateKey=uuid.getLeastSignificantBits()^backMask;
 		List<LeadwayUser> users=userRepository.findById(id);
 		if (users == null || users.size() == 0) {
 			result.put("code", 1);
@@ -132,38 +133,17 @@ public class UserService {
 			if(foundUser.getType()!=0) {
 				System.out.println("user already verified! code = "+code);
 				result.put("code", 1);
-			}else{
+			}else if(foundUser.getPrivateKey()!=privateKey) {
+				System.out.println("database is being attacked!!! code = " + code);
+				result.put("code", 1);
+			}
+			else{
 				foundUser.setType(1);
 				userRepository.save(foundUser);
 				System.out.println("user verified! code = "+code);
 				result.put("code", 0);
 			}
-
 		}
 		return result;
-	}
-
-	
-	// testings
-
-	public void addUser() {
-		LeadwayUser newUser = new LeadwayUser(
-				0, "henry@google.com", "henrypassword",
-				"henryStreet", "henryCity", "henryZip", "henryPhone");
-		
-		userRepository.save(newUser);
-	}
-	
-	public List<LeadwayUser> getUsers() {
-		List<LeadwayUser> resultList = new ArrayList<LeadwayUser> ();
-		userRepository.findAll().forEach(user -> {
-			resultList.add(user);
-		});
-		
-		return resultList;
-	}
-	
-	public void deleteUsers() {
-		userRepository.deleteAll();
 	}
 }

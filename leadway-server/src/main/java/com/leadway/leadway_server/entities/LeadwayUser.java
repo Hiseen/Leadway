@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.UUID;
 
 @Entity
 public class LeadwayUser {
@@ -19,8 +20,11 @@ public class LeadwayUser {
 	private String city;
 	private String zip;
 	private String phone;
+	private long privateKey;
 	
-	public LeadwayUser() { }
+	public LeadwayUser() {
+
+	}
 	
 	public LeadwayUser(int type, String email, String password, 
 			String street, String city, String zip, String phone) {
@@ -83,7 +87,12 @@ public class LeadwayUser {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
-	
-	
+
+	public long getPrivateKey() {
+		return privateKey;
+	}
+
+	public void setPrivateKey(long privateKey) {
+		this.privateKey = privateKey;
+	}
 }

@@ -1,8 +1,12 @@
 package com.leadway.leadway_server.controllers;
 
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
+import org.apache.commons.codec.DecoderException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.leadway.leadway_server.services.UserService;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.mail.MessagingException;
 
 
@@ -20,7 +27,7 @@ public class UserController {
 	private UserService service;
 	
 	@RequestMapping(method=RequestMethod.POST, value="/register")
-	public ObjectNode register(@RequestBody String request) throws IOException, InvalidKeySpecException, MessagingException {
+	public ObjectNode register(@RequestBody String request) throws IOException, InvalidKeySpecException, MessagingException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
 		ObjectNode signUpForm = (ObjectNode) new ObjectMapper().readTree(request);
 		System.out.println("Sign Up");
 		System.out.println(signUpForm);
@@ -36,7 +43,7 @@ public class UserController {
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value="/verify")
-	public ObjectNode verifyUser(@RequestParam("code") String code){
+	public ObjectNode verifyUser(@RequestParam("code") String code) throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, DecoderException, InvalidAlgorithmParameterException {
 		return service.verifyUser(code);
 	}
 	

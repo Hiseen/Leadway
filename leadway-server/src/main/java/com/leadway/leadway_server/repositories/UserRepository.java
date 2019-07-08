@@ -1,6 +1,7 @@
 package com.leadway.leadway_server.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 
@@ -12,6 +13,6 @@ public interface UserRepository extends CrudRepository<LeadwayUser, Long> {
 	
 	List<LeadwayUser> findByEmailAndPassword(String email, String password);
 
-	List<LeadwayUser> findById(long id);
+	Optional<LeadwayUser> findById(Long id);
 
 }

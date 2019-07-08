@@ -4,7 +4,6 @@ package com.leadway.leadway_server.services;
 import org.springframework.stereotype.Component;
 
 import java.util.Properties;
-import java.util.UUID;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -13,18 +12,17 @@ import javax.mail.internet.MimeMessage;
 public class MailService {
 
     private Session mailSession;
-    private String hostname = "http://localhost:8080";
-    private String senderEmail = "121989255@qq.com";
-    private String authToken = "<paste my authToken here>";
+    private final String hostname = "http://localhost:8080";
+    private final String senderEmail = "121989255@qq.com";
+    private final String authToken = "<enter my authToken here>";
 
     private MailService() {
         Properties mailServerProperties;
         mailServerProperties = System.getProperties();
         mailServerProperties.setProperty("mail.smtp.host", "smtp.qq.com");
-        mailServerProperties.put("mail.smtp.port", "465");
+        mailServerProperties.put("mail.smtp.port", "587");
         mailServerProperties.put("mail.smtp.auth", "true");
         mailServerProperties.put("mail.smtp.starttls.enable", "true");
-        mailServerProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         mailSession = Session.getDefaultInstance(mailServerProperties,
                 new Authenticator(){
                     protected PasswordAuthentication getPasswordAuthentication() {
@@ -32,7 +30,7 @@ public class MailService {
                     }});
     }
 
-    void sendVerificationMailTo(String email, UUID verificationCode)throws MessagingException {
+    void sendVerificationMailTo(String email, String verificationCode)throws MessagingException {
         MimeMessage message = new MimeMessage(mailSession);
         message.setFrom(new InternetAddress(senderEmail));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { MatSnackBar } from '@angular/material';
 
 export const USER_REGISTRATION_ENDPOINT = 'register';
 export const USER_SIGNIN_ENDPOINT = 'login';
@@ -10,7 +11,7 @@ export const USER_SIGNIN_ENDPOINT = 'login';
 })
 export class UserSigninService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private snackBar: MatSnackBar) { }
 
   public registerUser(registrationForm: object): void {
     console.log(registrationForm);
@@ -25,7 +26,13 @@ export class UserSigninService {
         }
       }
     ).subscribe(
-      res => console.log(res),
+      res => {
+        console.log(res);
+        // shows pop-up alerts to the user
+        this.snackBar.open('Verify your account in your email', 'confirm', {
+          duration: 5000
+        });
+      },
       error => console.log(error)
     );
   }

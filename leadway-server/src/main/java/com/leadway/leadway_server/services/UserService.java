@@ -51,8 +51,7 @@ public class UserService {
 		keyGen.init(128);
 		secretKey = keyGen.generateKey();
 		byte[] ivbytes = new byte[16];
-		SecureRandom prng = new SecureRandom();
-		prng.nextBytes(ivbytes);
+		random.nextBytes(ivbytes);
 		iv=new IvParameterSpec(ivbytes);
 	}
 	

@@ -20,7 +20,9 @@ public class LeadwayUser {
 	private String zip;
 	private String phone;
 	
-	public LeadwayUser() { }
+	public LeadwayUser() {
+
+	}
 	
 	public LeadwayUser(int type, String email, String password, 
 			String street, String city, String zip, String phone) {
@@ -35,12 +37,7 @@ public class LeadwayUser {
 		this.phone = phone;
 	}
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+
 	public int getType() {
 		return type;
 	}
@@ -83,7 +80,13 @@ public class LeadwayUser {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
-	
-	
+
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 }

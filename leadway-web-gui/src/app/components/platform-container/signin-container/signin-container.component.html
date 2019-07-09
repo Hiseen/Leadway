@@ -53,7 +53,7 @@
           Email is <strong>required</strong>.
         </mat-error>
         <button mat-button *ngIf="signUpFormGroup.value.email" matSuffix mat-icon-button
-          aria-label="Clear" (click)="resetSignInEmail()">
+          aria-label="Clear" (click)="resetSignUpEmail()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>
@@ -66,7 +66,7 @@
           Password is <strong>required</strong>.
         </mat-error>
         <button mat-button *ngIf="signUpFormGroup.value.password" matSuffix mat-icon-button
-          aria-label="Clear" (click)="resetSignInPassword()">
+          aria-label="Clear" (click)="resetSignUpPassword()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>

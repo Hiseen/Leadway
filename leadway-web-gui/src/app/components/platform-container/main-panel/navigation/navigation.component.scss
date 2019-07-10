@@ -1,0 +1,72 @@
+.leadway-navigation-body {
+  display: grid;
+  grid-template-rows: 100%;
+  grid-template-columns: 140px calc((100% - 340px)) 200px;
+}
+
+.navigation-logo {
+  grid-row-start: 1;
+  grid-row-end: 2;
+  grid-column-start: 1;
+  grid-column-end: 2;
+
+  font-weight: bold;
+  color: #2A3F88;
+}
+
+.navigation-form {
+  grid-row-start: 1;
+  grid-row-end: 2;
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+.navigation-utilities {
+  grid-row-start: 1;
+  grid-row-end: 2;
+  grid-column-start: 3;
+  grid-column-end: 4;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.search-box {
+  border-radius: 0px;
+  border-color: transparent;
+  width: calc((100% - 40px));
+}
+
+.search-button {
+  border-radius: 0px;
+  border-color: transparent;
+  width: 40px;
+}
+
+.form-container {
+  border-radius: 5px;
+  border: 2px solid grey;
+  width: 70%;
+  margin: auto;
+}
+
+.user-button {
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.dropdown-account-header {
+  padding: 6px 22px;
+  display: flex;
+  flex-direction: row;
+}
+
+.dropdown-user-icon {
+  font-size: 50px;
+  line-height: 0px;
+  margin-right: 10px;
+}
+
+.dropdown-user-info {
+  display: flex;
+  flex-direction: column;
+}

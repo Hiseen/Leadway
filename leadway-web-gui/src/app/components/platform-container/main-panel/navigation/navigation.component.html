@@ -1,0 +1,43 @@
+<nav class="leadway-navigation-body navbar sticky-top navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand navigation-logo" href="/lobby">Leadway  </a>
+
+  <form class="navigation-form form-inline d-none d-sm-block">
+    <div class="form-container">
+      <input class="search-box form-control" type="search" placeholder="Search" aria-label="Search">
+      <button class="search-button btn btn-outline-secondary" type="submit">
+        <i class="fa fa-search" aria-hidden="true"></i>
+      </button>
+    </div>
+  </form>
+
+  <div class="navigation-utilities">
+    <div class="search-utility d-inline d-sm-none">
+      <button class="search-button btn btn-outline-secondary" type="submit">
+        <i class="fa fa-search" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="user-utility dropdown d-inline">
+      <button class="user-button btn btn btn-success" type="submit" id="userDropdownMenu"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{userInitial}}</button>
+
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdownMenu">
+        <div class="dropdown-account-header">
+          <div class="dropdown-user-icon">
+            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+          </div>
+          <div class="dropdown-user-info">
+            <div class="account-name">Henry Chen</div>
+            <div class="account-email">henry@gmail.com</div>
+          </div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item">Manage Your Account</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item">View Recent Payments</a>
+        <a class="dropdown-item">View Subscribed Businesses</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item">Sign Out</a>
+      </div>
+    </div>
+  </div>
+</nav>

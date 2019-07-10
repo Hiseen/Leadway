@@ -10,6 +10,7 @@ export class PlatformContainerComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    console.log('On init, should check session here :D');
   }
 
 }

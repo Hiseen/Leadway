@@ -1,18 +1,37 @@
 <nav class="leadway-navigation-body navbar sticky-top navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand navigation-logo" href="/lobby">Leadway  </a>
+  <!-- navigation header -->
+  <a class="navbar-brand navigation-logo" href="/">Leadway  </a>
 
-  <form class="navigation-form form-inline d-none d-sm-block">
-    <div class="form-container">
-      <input class="search-box form-control" type="search" placeholder="Search" aria-label="Search">
+  <!-- navigation search bar -->
+  <form class="navigation-form form-inline d-none d-md-block">
+    <div class="form-container input-group">
+
+      <!-- location search item -->
+
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Find</span>
+      </div>
+
+      <input class="search-box form-control" type="search" placeholder="Delivery, Tutoring"
+        aria-label="Search">
+
+      <!-- location input group -->
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Near</span>
+      </div>
+      <input class="search-box form-control" type="search" placeholder="Irvine, CA"
+        aria-label="Search">
+
       <button class="search-button btn btn-outline-secondary" type="submit">
         <i class="fa fa-search" aria-hidden="true"></i>
       </button>
     </div>
   </form>
 
+  <!-- navigation utilities on the right -->
   <div class="navigation-utilities">
-    <div class="search-utility d-inline d-sm-none">
-      <button class="search-button btn btn-outline-secondary" type="submit">
+    <div class="search-utility d-inline d-md-none">
+      <button class="search-utility-button btn btn-outline-secondary" type="submit">
         <i class="fa fa-search" aria-hidden="true"></i>
       </button>
     </div>

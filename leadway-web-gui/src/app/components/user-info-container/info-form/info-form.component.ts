@@ -3,8 +3,6 @@ import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms'
 import { Router } from '@angular/router';
 import { UserSigninService } from 'src/app/services/login/user-signin.service';
 
-import { RookieInfo } from '../../../services/enter_info/rookie-info';
-
 @Component({
   selector: 'leadway-info-form',
   templateUrl: './info-form.component.html',
@@ -70,8 +68,6 @@ export class InfoFormComponent implements OnInit {
 
   ngOnInit() {
   }
-
-  rookietest1 = new RookieInfo('chenanyi1997@yahoo.com','937 Tigher Street','Heaven','47284','6381938462','Anyi','Chen');
 
   submitted = false;
   onSubmit() {this.submitted = true;}

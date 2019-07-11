@@ -1,0 +1,30 @@
+  <mat-toolbar class="toolbar">
+    <mat-toolbar-row>
+      <span class="sign-in-header">//Leadway Logo</span>
+      <span class="example-spacer"></span>
+      <a mat-icon-button class="example-icon" href="/" style="float: right"><i class="fa fa-home fa-lg"></i></a>
+    </mat-toolbar-row>
+    
+  </mat-toolbar>
+
+  <div class="container jumbotron"
+    fxLayout="row"
+    fxLayout.sm="column" 
+    fxLayout.xs="column" 
+    fxLayoutAlign.xs="start center"
+    fxLayoutAlign.sm="start center" 
+    fxLayoutAlign.gt-sm="center center" 
+    fxLayoutGap="10px">
+
+  <div fxFlex>
+    <h1 style="font-family:Arial Black">Welcome to Leadway!</h1>
+    <p style="font-size: 20px; font-family:Tahoma"> &nbsp; At this point, we need your information for completing the sign-up process, to provide you with the BEST service.</p>
+    <div class="button-group">
+      <button mat-raised-button (click)="EnterpriseToggle()">Join as Enterprise</button>  &nbsp;&nbsp; 
+      <button mat-raised-button (click)="ExpertToggle()">Join as Expert</button>
+    </div>
+  </div>
+  
+</div>
+
+

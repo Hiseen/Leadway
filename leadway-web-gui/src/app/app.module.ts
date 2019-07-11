@@ -11,13 +11,21 @@ import { PlatformContainerComponent } from './components/platform-container/plat
 import { SigninContainerComponent } from './components/platform-container/signin-container/signin-container.component';
 import { MainPanelComponent } from './components/platform-container/main-panel/main-panel.component';
 import { HttpClientModule } from '@angular/common/http';
+import { EnterUserInfoComponent } from './components/user-info-container/enter-user-info/enter-user-info.component';
+import { TopBarComponent } from './components/user-info-container/top-bar/top-bar.component';
+import { InfoFormComponent } from './components/user-info-container/info-form/info-form.component';
+import { FooterComponent } from './components/user-info-container/footer/footer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PlatformContainerComponent,
     SigninContainerComponent,
-    MainPanelComponent
+    MainPanelComponent,
+    EnterUserInfoComponent,
+    TopBarComponent,
+    InfoFormComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

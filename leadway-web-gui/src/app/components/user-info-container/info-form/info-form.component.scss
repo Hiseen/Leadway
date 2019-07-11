@@ -1,0 +1,83 @@
+.form-container{
+    grid-column-start: 2;
+    grid-row-start: 1;
+  
+    background-color: white;
+    margin: 70px;
+    padding: 20px;
+    border-radius: 14px;
+    opacity: 0.9;
+  }
+  
+  
+  .grid-container {
+    display: grid;
+    grid-template-rows: 100%;
+    // by default the form-container will take 100% of space
+    grid-template-columns: auto 100%;
+  }
+
+
+  .uiHeaderTitle {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    border-bottom: 1px solid rgb(173, 170, 170);
+    padding-bottom: 10px;
+  }
+
+  .label-style {
+    font-size: 120%; 
+    font-family: "Gill Sans";
+  }
+
+  .name-container {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .name-container > * {
+    width: 20%;
+  }
+
+  .city-container {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .city-container > * {
+    width: 30%;
+  }
+
+  .address-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .address-container > * {
+    width: 40%;
+  }
+
+  .register-button {
+    background-color: rgb(85, 85, 99);
+    color: white;
+    font-weight: bold;
+  }
+
+  .sign-up-button {
+    color: rgb(48, 48, 51);
+    font-weight: bold;
+  }
+  
+  .sign-up-button:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .form-footer {
+    margin-top: 30px;
+    font-size: 18px;
+    display: flex;
+
+    justify-content: flex-end;
+    
+  }
+  

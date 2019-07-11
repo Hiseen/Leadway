@@ -1,4 +1,4 @@
-$lt-gray: #ddd;
+
 $background-dark: #25315B;
 
 .example-icon {
@@ -14,28 +14,3 @@ $background-dark: #25315B;
     color: $background-dark;
 }
 
-
-@mixin zero-margin($pad-up-down, $pad-left-right) {
-    margin: 0px auto;
-    padding: $pad-up-down $pad-left-right;
-}
-
-.jumbotron {
-    @include zero-margin(70px,30px);
-    background: $background-dark ;
-    color:floralwhite;
-    min-height: 60px;
-}
-
-.button-group {
-    position: absolute;
-    right: 30px;
-    margin: 0;
-}
-
-.toolbar {
-    position: sticky;
-    position: -webkit-sticky; 
-    top: 0; 
-    z-index: 1000;
-}

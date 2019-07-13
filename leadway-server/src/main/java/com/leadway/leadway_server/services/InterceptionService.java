@@ -12,6 +12,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.WebUtils;
+
+import java.util.Arrays;
 import java.util.Optional;
 
 @Component
@@ -23,25 +25,34 @@ public class InterceptionService implements HandlerInterceptor {
     @Autowired
     EncryptionService encryptionService;
 
+    private final String[] passPaths={"/error","/verify","/login","/register"};
+
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
-        if("/verify".equals(request.getRequestURI()) ||"/login".equals(request.getRequestURI()) || "/register".equals(request.getRequestURI())) {
-            //if it's login or register, no need to check token or session.
+        if(Arrays.stream(passPaths).anyMatch(str->str.equals(request.getRequestURI()))) {
+            //if it's one of the passPaths, no need to check token or session.
             return true;
         }
         Cookie cookie=WebUtils.getCookie(request,"token");
         if (cookie!=null) {
             //token found
             //auto-login user
-            String tokenString=cookie.getValue();
-            String decrypted=encryptionService.AESDecrypt(tokenString);
-            String[] result=decrypted.split(":");
-            Long id=Long.parseLong(result[0]);
-            Long token=Long.parseLong(result[1]);
-            Optional<AutoLoginData> data=autoLoginDataRepository.findById(id);
-            if(data.isPresent() && data.get().getToken().equals(token) && data.get().getExpirationTime()> System.currentTimeMillis()) {
-                //found data and it does not expire.
-                return true;
+            try {
+                String tokenString = cookie.getValue();
+                String decrypted = encryptionService.AESDecrypt(tokenString);
+                String[] result = decrypted.split(":");
+                Long id = Long.parseLong(result[0]);
+                Long token = Long.parseLong(result[1]);
+                Optional<AutoLoginData> data = autoLoginDataRepository.findById(id);
+                if (data.isPresent() && data.get().getToken().equals(token) && data.get().getExpirationTime() > System.currentTimeMillis()) {
+                    //found data and it does not expire.
+                    return true;
+                }
+            } catch(Exception ex)
+            {
+                response.sendRedirect("http://localhost:4200");
+                return false;
             }
         }
         response.sendRedirect("http://localhost:4200");

@@ -105,19 +105,25 @@ public class UserService {
 			
 			JsonNode userJson = new ObjectMapper().valueToTree(foundUser);
 			result.put("code", 0);
-			
+
 //			Boolean remeberme=true;
 //			Long token=new SecureRandom().nextLong();
 //			String tokenString=foundUser.getId()+":"+token.toString();
 //			String saltedToken=encryptionService.AESEncrypt(tokenString);
-//			AutoLoginData data=new AutoLoginData();
-//			data.setUser(foundUser);
+//			Optional<AutoLoginData> foundData=autoLoginDataRepository.findById(foundUser.getId());
+//			AutoLoginData data;
+//			if(foundData.isPresent()) {
+//				data=foundData.get();
+//			} else {
+//				data=new AutoLoginData();
+//				data.setUser(foundUser);
+//			}
 //			data.setToken(token);
 //			data.setExpirationTime(System.currentTimeMillis()+(remeberme?7*24*60*60*1000:60*60*1000));
 //			autoLoginDataRepository.save(data);
 //			SetLoginToken(httpResponse,saltedToken,remeberme?7*24*60*60:60*60);
-			
-			result.set("data", userJson);
+			result.set("user", userJson);
+
 			return result;
 		}
 	}

@@ -25,7 +25,7 @@ public class InterceptionService implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
-        if("/login".equals(request.getRequestURI()) || "/register".equals(request.getRequestURI())) {
+        if("/verify".equals(request.getRequestURI()) ||"/login".equals(request.getRequestURI()) || "/register".equals(request.getRequestURI())) {
             //if it's login or register, no need to check token or session.
             return true;
         }

@@ -11,40 +11,35 @@ export const USER_AUTHENTICATION_ENDPOINT = 'user-auth';
 })
 export class UserAuthService {
 
-  private sessionVerificationStream = new Subject<boolean> ();
+  private tokenVerificationStream = new Subject<boolean> ();
 
   constructor(private http: HttpClient) { }
 
-  public getSessionVerificationStream(): Observable<boolean> {
-    return this.sessionVerificationStream.asObservable();
+  public getTokenVerificationStream(): Observable<boolean> {
+    return this.tokenVerificationStream.asObservable();
   }
 
-  public checkUserAuthenticated(): void {
+  public checkUserAuthenticated(currentToken: string): void {
 
-    // sessionID is a encrypted user info to verify user if user selects 'remember me'.
-    //  this info is stored in local storage so that it is still there when browser closees
-
-    const currentSessionID = localStorage.getItem('sessionID');
-
-    this.checkValidSessionID(currentSessionID).subscribe(
-      sessionStatus => {
-        sessionStorage.setItem('verifiedSession', JSON.stringify(sessionStatus));
-        this.sessionVerificationStream.next(sessionStatus);
+    this.checkValidTokenID(currentToken).subscribe(
+      tokenStatus => {
+        sessionStorage.setItem('verifiedToken', JSON.stringify(tokenStatus));
+        this.tokenVerificationStream.next(tokenStatus);
       }
     );
   }
 
   /**
    * This method sends http request to the backend to verify the
-   *  session ID stored inside the local storage.
+   *  token ID stored inside the local storage.
    *
-   * @param sessionID session ID
+   * @param tokenID token ID
    */
-  private checkValidSessionID(sessionID: string): Observable<boolean> {
+  private checkValidTokenID(tokenID: string): Observable<boolean> {
     const requestURL = `${environment.apiUrl}/${USER_AUTHENTICATION_ENDPOINT}`;
     return this.http.post<boolean>(
       requestURL,
-      JSON.stringify({session: sessionID}),
+      JSON.stringify({token: tokenID}),
       {
         headers: {
           'Content-Type': 'application/json'

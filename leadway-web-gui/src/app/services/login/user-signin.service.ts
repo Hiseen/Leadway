@@ -64,8 +64,19 @@ export class UserSigninService {
     ).subscribe(
       res => {
         if (res.code === 0) {
+
+          // saves login token in local storage
+          if (res.data) {
+            localStorage.setItem('tokenID', res.data);
+          } else {
+            localStorage.removeItem('tokenID');
+          }
+          sessionStorage.setItem('verifiedToken', 'true');
           this.router.navigate(['main']);
         } else {
+          sessionStorage.setItem('verifiedToken', 'false');
+          localStorage.removeItem('tokenID');
+
           this.snackBar.open(res.error, 'ok', {
             duration: 10000
           });

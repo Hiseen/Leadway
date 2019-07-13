@@ -42,7 +42,7 @@ public class UserController {
 			throws IOException, InvalidKeySpecException, BadPaddingException, IllegalBlockSizeException {
 		
 		ObjectNode signInForm = (ObjectNode) new ObjectMapper().readTree(request);
-		ObjectNode result=service.loginUser(signInForm,httpResponse);
+		ObjectNode result = service.loginUser(signInForm, httpResponse);
 		return result;
 	}
 

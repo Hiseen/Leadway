@@ -27,7 +27,8 @@ export class SigninContainerComponent implements OnInit {
       ])),
       password: new FormControl('', Validators.compose([
         Validators.required
-      ]))
+      ])),
+      rememberMe: new FormControl('')
     });
 
     this.signUpFormGroup = formBuilder.group({

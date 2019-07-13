@@ -89,6 +89,8 @@ public class UserService {
 		String userEmail = signInForm.get("email").asText();
 		String userPassword = signInForm.get("password").asText();
 		String encryptedPassword = encryptionService.PBKDF2Encrypt(userPassword);
+		boolean rememberMe = signInForm.get("rememberMe").asBoolean();
+		
 		List<LeadwayUser> users = userRepository.findByEmailAndPassword(userEmail, encryptedPassword);
 		
 		if (users.size() == 0) {
@@ -105,24 +107,25 @@ public class UserService {
 			
 			JsonNode userJson = new ObjectMapper().valueToTree(foundUser);
 			result.put("code", 0);
-
-//			Boolean remeberme=true;
-//			Long token=new SecureRandom().nextLong();
-//			String tokenString=foundUser.getId()+":"+token.toString();
-//			String saltedToken=encryptionService.AESEncrypt(tokenString);
-//			Optional<AutoLoginData> foundData=autoLoginDataRepository.findById(foundUser.getId());
-//			AutoLoginData data;
-//			if(foundData.isPresent()) {
-//				data=foundData.get();
-//			} else {
-//				data=new AutoLoginData();
-//				data.setUser(foundUser);
-//			}
-//			data.setToken(token);
-//			data.setExpirationTime(System.currentTimeMillis()+(remeberme?7*24*60*60*1000:60*60*1000));
-//			autoLoginDataRepository.save(data);
-//			SetLoginToken(httpResponse,saltedToken,remeberme?7*24*60*60:60*60);
-			result.set("user", userJson);
+			
+			// only stores token into DB when rememberMe is selected, if not
+			//	frontend will use session token (will timeout when user exit the tab / browser)
+			if (rememberMe) {
+				Long token = new SecureRandom().nextLong();
+				String tokenString = foundUser.getId() + ":" + token.toString();
+				String saltedToken = encryptionService.AESEncrypt(tokenString);
+				Optional<AutoLoginData> foundData = autoLoginDataRepository.findById(foundUser.getId());
+				AutoLoginData data = new AutoLoginData();
+				if (foundData.isPresent()) {
+					data = foundData.get();
+				} else {
+					data.setUser(foundUser);
+				}
+				data.setToken(token);
+				data.setExpirationTime(System.currentTimeMillis() + 7*24*60*60*1000);
+				autoLoginDataRepository.save(data);
+				result.put("data", saltedToken);
+			}
 
 			return result;
 		}

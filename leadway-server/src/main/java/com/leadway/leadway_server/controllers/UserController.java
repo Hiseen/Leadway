@@ -29,33 +29,26 @@ public class UserController {
 	private UserService service;
 	
 	@RequestMapping(method=RequestMethod.POST, value="/register")
-	public ObjectNode register(@RequestBody String request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, InvalidKeySpecException, MessagingException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+	public ObjectNode register(@RequestBody String request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) 
+			throws IOException, InvalidKeySpecException, MessagingException, NoSuchPaddingException, InvalidKeyException, 
+			NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+		
 		ObjectNode signUpForm = (ObjectNode) new ObjectMapper().readTree(request);
-		System.out.println("Sign Up");
-		System.out.println(signUpForm);
 		return service.createNewUserEntities(signUpForm);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/login")
-	public ObjectNode signIn(@RequestBody String request,HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, InvalidKeySpecException, BadPaddingException, IllegalBlockSizeException {
+	public ObjectNode signIn(@RequestBody String request,HttpServletRequest httpRequest, HttpServletResponse httpResponse) 
+			throws IOException, InvalidKeySpecException, BadPaddingException, IllegalBlockSizeException {
+		
 		ObjectNode signInForm = (ObjectNode) new ObjectMapper().readTree(request);
-		System.out.println("Sign In");
-		System.out.println(signInForm);
 		ObjectNode result=service.loginUser(signInForm,httpResponse);
 		return result;
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value="/verify")
-	public ObjectNode verifyUser(@RequestParam("code") String code) throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, DecoderException, InvalidAlgorithmParameterException {
+	public ObjectNode verifyUser(@RequestParam("code") String code) throws NoSuchPaddingException, BadPaddingException, 
+		InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, DecoderException, InvalidAlgorithmParameterException {
 		return service.verifyUser(code);
 	}
-
-	@RequestMapping(method=RequestMethod.GET, value="/index")
-	public ObjectNode mainTab(HttpServletRequest servletRequest)
-	{
-		ObjectNode result = new ObjectMapper().createObjectNode();
-		result.put("result","welcome!");
-		return result;
-	}
-
 }

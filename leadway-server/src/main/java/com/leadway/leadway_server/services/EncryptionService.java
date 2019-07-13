@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 public class EncryptionService {
 
     private byte[] salt = new byte[16];
-    private IvParameterSpec iv;
     private SecretKey secretKey;
     private SecretKeyFactory factory;
     private int bcryptIterations = 65536;
@@ -38,11 +37,14 @@ public class EncryptionService {
         KeyGenerator keyGen=KeyGenerator.getInstance("AES");
         keyGen.init(128);
         secretKey = keyGen.generateKey();
+        
         byte[] ivbytes = new byte[16];
         secureRNG.nextBytes(ivbytes);
-        iv=new IvParameterSpec(ivbytes);
+        IvParameterSpec iv = new IvParameterSpec(ivbytes);
+        // initializing encryption and decryption cipher
         aesCipher4Encrypt = Cipher.getInstance("AES/CBC/PKCS5PADDING");
         aesCipher4Encrypt.init(Cipher.ENCRYPT_MODE, secretKey, iv);
+        
         aesCipher4Decrypt = Cipher.getInstance("AES/CBC/PKCS5PADDING");
         aesCipher4Decrypt.init(Cipher.DECRYPT_MODE, secretKey, iv);
     }

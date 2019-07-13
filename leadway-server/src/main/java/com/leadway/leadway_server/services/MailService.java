@@ -14,7 +14,7 @@ public class MailService {
     private Session mailSession;
     private final String hostname = "http://localhost:8080";
     private final String senderEmail = "121989255@qq.com";
-    private final String authToken = "<enter my authToken here>";
+    private final String authToken = "uupakcvaukdtbjdb";
 
     private MailService() {
         Properties mailServerProperties;
@@ -35,11 +35,13 @@ public class MailService {
         message.setFrom(new InternetAddress(senderEmail));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
         message.setSubject("Leadway Email Verification");
-        String verificationURL=hostname+"/verify?code="+verificationCode;
-        message.setContent("Welcome to Leadway!<br><br>" +
-                        "Thank you for signing up. Please verify your e-mail address by visiting the link below in your browser of choice:<br>" +
-                        verificationURL+"",
-                "text/html" );
+        
+        String verificationURL = hostname + "/verify?code=" + verificationCode;
+        String verificationContent = "Welcome to Leadway!<br><br>" +
+                "Thank you for signing up. Please verify your e-mail address by visiting the link below in your browser of choice:<br>" +
+                verificationURL;
+        
+        message.setContent(verificationContent, "text/html" );
         Transport.send(message);
     }
 

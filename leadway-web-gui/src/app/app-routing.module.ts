@@ -5,6 +5,7 @@ import { MainPanelComponent } from './components/platform-container/main-panel/m
 import { LandingPageComponent } from './components/platform-container/main-panel/landing-page/landing-page.component';
 import { BusinessDetailComponent } from './components/platform-container/main-panel/business-detail/business-detail.component';
 import { BusinessSearchComponent } from './components/platform-container/main-panel/business-search/business-search.component';
+import { LoginAuthGuard } from './guards/login-auth.guard';
 
 const routes: Routes = [
   { path: 'signin', component: SigninContainerComponent },
@@ -15,7 +16,8 @@ const routes: Routes = [
       { path: '', component: LandingPageComponent },
       { path: 'search', component: BusinessSearchComponent },
       { path: 'business/:name', component: BusinessDetailComponent }
-    ]
+    ],
+    canActivate: [LoginAuthGuard]
   },
   // redirect to main lobby if the path is invalid
   { path: '**', redirectTo: '', pathMatch: 'full'}
@@ -23,6 +25,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [LoginAuthGuard]
 })
 export class AppRoutingModule { }

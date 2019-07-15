@@ -1,21 +1,18 @@
 package com.leadway.leadway_server.services;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.util.List;
 import java.util.Optional;
 
 import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
 import javax.mail.MessagingException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
+import com.leadway.leadway_server.entities.AutoLoginData;
+import com.leadway.leadway_server.repositories.AutoLoginDataRepository;
 import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,122 +29,147 @@ public class UserService {
 	private UserRepository userRepository;
 
 	@Autowired
+	private AutoLoginDataRepository autoLoginDataRepository;
+
+	@Autowired
 	private MailService mailService;
+
+	@Autowired
+	private EncryptionService encryptionService;
 	
-	private byte[] salt = new byte[16];
-	private IvParameterSpec iv = null;
-	private SecretKey secretKey;
-	private SecretKeyFactory factory;
-	private int bcryptIterations = 65536;
-	private int keyLength = 128;
+	// temporary variable to prevent email authentication every single time
+	private boolean isDeveloping = true;
+
+	private UserService() {}
 	
-	public UserService() throws NoSuchAlgorithmException {
-		// generating PBKDF2 salts and factory
-		SecureRandom random = new SecureRandom();
-		random.nextBytes(salt);
-		factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-		// generating AES related credentials
-		KeyGenerator keyGen=KeyGenerator.getInstance("AES");
-		keyGen.init(128);
-		secretKey = keyGen.generateKey();
-		byte[] ivbytes = new byte[16];
-		random.nextBytes(ivbytes);
-		iv=new IvParameterSpec(ivbytes);
-	}
-	
-	public ObjectNode createNewUserEntities(ObjectNode signUpForm) throws InvalidKeySpecException, MessagingException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException {
+	public ObjectNode createNewUserEntities(ObjectNode signUpForm) throws InvalidKeySpecException, MessagingException, 
+			BadPaddingException, IllegalBlockSizeException {
 		ObjectNode result = new ObjectMapper().createObjectNode();
 
 		LeadwayUser newUser = new LeadwayUser();
 		String userEmail = signUpForm.get("email").asText();
 		
 		List<LeadwayUser> userWithIdenticalEmail = userRepository.findByEmail(userEmail);
-		
-		System.out.println(signUpForm);
-		if (userWithIdenticalEmail.size() > 0) {
-			// if email is already used previously, mark this operation is failed
-			result.put("code", 1);
-			System.out.println("Email already used");
-			return result;
-		} else {
-			
-			String userPassword = signUpForm.get("password").asText();
-			
-			// conduct PBKDF2 encryption that uses `salt`
-			KeySpec spec = new PBEKeySpec(userPassword.toCharArray(), salt, bcryptIterations, keyLength);
-			byte[] hash = factory.generateSecret(spec).getEncoded();
-			
-			String encryptedPassword = Hex.encodeHexString(hash);
 
-			newUser.setEmail(userEmail);
-			newUser.setPassword(encryptedPassword);
-			userRepository.save(newUser);
-			Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-			aesCipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
-			byte[] byteCipherText = aesCipher.doFinal(newUser.getId().toString().getBytes());
-			mailService.sendVerificationMailTo(userEmail, Hex.encodeHexString(byteCipherText));
-			result.put("code", 0);
-			System.out.println("Email registered");
-			return result;	
+
+		if (userWithIdenticalEmail.size() > 0) {
+			// if email is already used and verified previously, mark this operation is failed
+			LeadwayUser user = userWithIdenticalEmail.get(0);
+			if (user.getType() != 0) {
+				result.put("code", 1);
+				result.put("error", "Email already used");
+				return result;
+			}
 		}
+			
+		String userPassword = signUpForm.get("password").asText();
+		String encryptedPassword = encryptionService.PBKDF2Encrypt(userPassword);
+		newUser.setEmail(userEmail);
+		newUser.setPassword(encryptedPassword);
+		
+		// type 0 = unverified user
+		newUser.setType(0);
+		userRepository.save(newUser);
+		
+		if (!isDeveloping) {
+			mailService.sendVerificationMailTo(userEmail, encryptionService.AESEncrypt(newUser.getId().toString()));			
+		}
+		
+		result.put("code", 0);
+		result.put("error", "user registered, please verify your account through email");
+		
+		return result;	
+		
 	}
 	
-	public ObjectNode loginUser(ObjectNode signInForm) throws InvalidKeySpecException {
+	public ObjectNode loginUser(ObjectNode signInForm, HttpServletResponse httpResponse) throws InvalidKeySpecException, 
+			BadPaddingException, IllegalBlockSizeException {
+		
 		ObjectNode result = new ObjectMapper().createObjectNode();
-
 		String userEmail = signInForm.get("email").asText();
 		String userPassword = signInForm.get("password").asText();
-		
-		// conduct PBKDF2 encryption that uses `salt`
-		KeySpec spec = new PBEKeySpec(userPassword.toCharArray(), salt, bcryptIterations, keyLength);
-		byte[] hash = factory.generateSecret(spec).getEncoded();
-		
-		String encryptedPassword = Hex.encodeHexString(hash);
+		String encryptedPassword = encryptionService.PBKDF2Encrypt(userPassword);
+		boolean rememberMe = signInForm.get("rememberMe").asBoolean();
 		
 		List<LeadwayUser> users = userRepository.findByEmailAndPassword(userEmail, encryptedPassword);
+		
 		if (users.size() == 0) {
 			result.put("code", 1);
+			result.put("error", "invalid username or password");
 			return result;
 		} else {
 			LeadwayUser foundUser = users.get(0);
+			if (!isDeveloping && foundUser.getType() == 0) {
+				result.put("code", 1);
+				result.put("error", "account is not verified yet");
+				return result;
+			}
+			
 			JsonNode userJson = new ObjectMapper().valueToTree(foundUser);
 			result.put("code", 0);
-			result.set("user", userJson);
+			
+			// only stores token into DB when rememberMe is selected, if not
+			//	frontend will use session token (will timeout when user exit the tab / browser)
+			if (rememberMe) {
+				Long token = new SecureRandom().nextLong();
+				String tokenString = foundUser.getId() + ":" + token.toString();
+				String saltedToken = encryptionService.AESEncrypt(tokenString);
+				Optional<AutoLoginData> foundData = autoLoginDataRepository.findById(foundUser.getId());
+				AutoLoginData data = new AutoLoginData();
+				if (foundData.isPresent()) {
+					data = foundData.get();
+				} else {
+					data.setUser(foundUser);
+				}
+				data.setToken(token);
+				data.setExpirationTime(System.currentTimeMillis() + 7*24*60*60*1000);
+				autoLoginDataRepository.save(data);
+				result.put("data", saltedToken);
+			}
+
 			return result;
 		}
 	}
 
-	public ObjectNode verifyUser(String code) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, DecoderException, BadPaddingException, IllegalBlockSizeException {
+	public ObjectNode verifyUser(String code) throws BadPaddingException, IllegalBlockSizeException, DecoderException {
 		ObjectNode result = new ObjectMapper().createObjectNode();
-		Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-		aesCipher.init(Cipher.DECRYPT_MODE, secretKey, iv);
-		String decrypted=new String(aesCipher.doFinal(Hex.decodeHex(code.toCharArray())));
+		String decrypted = encryptionService.AESDecrypt(code);
 		Long id;
 		try {
 			id=Long.parseLong(decrypted);
 		}
 		catch(Exception ex) {
 			result.put("code",1);
-			result.put("error","invalid code received! code = "+code);
+			result.put("error","invalid code received! code = " + code);
 			return result;
 		}
 		System.out.println("verify user with id = "+id);
 		Optional<LeadwayUser> foundUser=userRepository.findById(id);
 		if (!foundUser.isPresent()) {
 			result.put("code", 1);
-			result.put("error","no user found! code = "+code);
+			result.put("error","no user found! code = " + code);
 		} else{
-			LeadwayUser user=foundUser.get();
-			if(user.getType()!=0) {
-				result.put("error","user already verified! code = "+code);
+			LeadwayUser user = foundUser.get();
+			if(user.getType() != 0) {
+				result.put("error","user already verified! code = " + code);
 				result.put("code", 1);
 			} else{
 				user.setType(1);
 				userRepository.save(user);
 				System.out.println("user verified! code = "+code);
 				result.put("code", 0);
+				result.put("message", "User successfully verified! You can login to leadway right now!");
 			}
 		}
 		return result;
+	}
+
+	private void SetLoginToken(HttpServletResponse httpResponse,String token,int expiry)
+	{
+		Cookie cookie = new Cookie("token", token);
+		cookie.setMaxAge(expiry);
+		//cookie.setSecure(true);  // requires HTTPS?
+		cookie.setPath("/"); // work for whole domain
+		httpResponse.addCookie(cookie);
 	}
 }

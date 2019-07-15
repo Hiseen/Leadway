@@ -32,6 +32,9 @@
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>
+
+      <mat-checkbox class="mat-form-checkbox" formControlName="rememberMe">Remember Me</mat-checkbox>
+
       <button class="sign-in-button" mat-stroked-button type="submit" (click)="signInUser()">Sign In</button>
       <div class="form-footer">
         New to Leadway? <a class="sign-up-button" (click)="signUpToggle()">Sign Up Now!</a>

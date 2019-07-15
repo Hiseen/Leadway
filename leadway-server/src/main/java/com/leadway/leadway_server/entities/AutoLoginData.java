@@ -15,8 +15,18 @@ public class AutoLoginData {
     private Long token;
 
     private Long expirationTime;
+    
+    private boolean remember;
 
-    public Long getId() {
+    public boolean isRemember() {
+		return remember;
+	}
+
+	public void setRemember(boolean remember) {
+		this.remember = remember;
+	}
+
+	public Long getId() {
         return id;
     }
 

@@ -1,11 +1,18 @@
 <nav class="leadway-navigation-body navbar sticky-top navbar-expand-lg navbar-light bg-light">
   <!-- navigation header -->
-  <a class="navbar-brand navigation-logo" href="/">Leadway  </a>
+  <a [ngClass]="{'hidden-container': showHiddenSearchBar}"
+    class="navbar-brand navigation-logo" href="/">Leadway  </a>
 
   <!-- navigation search bar -->
-  <form class="navigation-form form-inline d-none d-md-block">
+  <form [ngClass]="{'hidden-container': !showHiddenSearchBar}"
+    class="form-inline minimized-navigation-form navigation-form" [formGroup]="searchFormGroup">
+
     <div class="form-container input-group">
 
+      <button class="back-button btn btn-outline-secondary d-inline d-md-none"
+          type="submit" (click)="miniBackClick()">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+      </button>
       <!-- location search item -->
 
       <div class="input-group-prepend">
@@ -13,25 +20,26 @@
       </div>
 
       <input class="search-box form-control" type="search" placeholder="Delivery, Tutoring"
-        aria-label="Search">
+        aria-label="Search" formControlName="query">
 
       <!-- location input group -->
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon1">Near</span>
       </div>
       <input class="search-box form-control" type="search" placeholder="Irvine, CA"
-        aria-label="Search">
+        aria-label="Search" formControlName="location">
 
-      <button class="search-button btn btn-outline-secondary" type="submit">
+      <button class="search-button btn btn-outline-secondary" type="submit" >
         <i class="fa fa-search" aria-hidden="true"></i>
       </button>
     </div>
   </form>
 
   <!-- navigation utilities on the right -->
-  <div class="navigation-utilities">
+  <div [ngClass]="{'hidden-container': showHiddenSearchBar}" class="navigation-utilities">
     <div class="search-utility d-inline d-md-none">
-      <button class="search-utility-button btn btn-outline-secondary" type="submit">
+      <button class="search-utility-button btn btn-outline-secondary" type="submit"
+        (click)="miniSearchClick()">
         <i class="fa fa-search" aria-hidden="true"></i>
       </button>
     </div>
@@ -55,7 +63,7 @@
         <a class="dropdown-item">View Recent Payments</a>
         <a class="dropdown-item">View Subscribed Businesses</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item">Sign Out</a>
+        <a class="dropdown-item" (click)="logoutUser()">Sign Out</a>
       </div>
     </div>
   </div>

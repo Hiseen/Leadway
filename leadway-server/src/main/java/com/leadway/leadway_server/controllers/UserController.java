@@ -45,6 +45,14 @@ public class UserController {
 		ObjectNode result = service.loginUser(signInForm, httpResponse);
 		return result;
 	}
+	
+	@RequestMapping(method=RequestMethod.POST, value="logout")
+	public ObjectNode signOut(@RequestBody String request,HttpServletRequest httpRequest, HttpServletResponse httpResponse) 
+			throws IOException, BadPaddingException, IllegalBlockSizeException, DecoderException {
+		ObjectNode logoutInfo = (ObjectNode) new ObjectMapper().readTree(request);
+		ObjectNode result = service.logoutUser(logoutInfo, httpResponse);
+		return result;
+	}
 
 	@RequestMapping(method=RequestMethod.GET, value="/verify")
 	public ObjectNode verifyUser(@RequestParam("code") String code) throws NoSuchPaddingException, BadPaddingException, 

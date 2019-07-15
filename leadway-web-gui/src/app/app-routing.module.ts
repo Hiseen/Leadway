@@ -6,9 +6,10 @@ import { LandingPageComponent } from './components/platform-container/main-panel
 import { BusinessDetailComponent } from './components/platform-container/main-panel/business-detail/business-detail.component';
 import { BusinessSearchComponent } from './components/platform-container/main-panel/business-search/business-search.component';
 import { LoginAuthGuard } from './guards/login-auth.guard';
+import { AutoLoginGuard } from './guards/auto-login.guard';
 
 const routes: Routes = [
-  { path: 'signin', component: SigninContainerComponent },
+  { path: 'signin', component: SigninContainerComponent, canActivate: [AutoLoginGuard] },
   {
     path: '',
     component: MainPanelComponent,
@@ -26,6 +27,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [LoginAuthGuard]
+  providers: [LoginAuthGuard, AutoLoginGuard]
 })
 export class AppRoutingModule { }

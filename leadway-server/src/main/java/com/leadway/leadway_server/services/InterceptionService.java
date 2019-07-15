@@ -38,23 +38,21 @@ public class InterceptionService implements HandlerInterceptor {
             response.getWriter().write("false");
         	return false;
         }
-	    return true;
 
-	    // check these when in the mapping controller (since we need to redo this to get user info again)
-//		String tokenString = cookie.getValue();
-//		
-//		String decrypted = encryptionService.AESDecrypt(tokenString);
-//		String[] result = decrypted.split(":");
-//		Long id = Long.parseLong(result[0]);
-//		Long token = Long.parseLong(result[1]);
-//		Optional<AutoLoginData> data = autoLoginDataRepository.findById(id);
-//		if (data.isPresent() && data.get().getToken().equals(token) && data.get().getExpirationTime() > System.currentTimeMillis()) {
-//		    //found data and it does not expire.
-//		    return true;
-//		}
-//        
-//        response.getWriter().write("false");
-//        return false;
+		String tokenString = cookie.getValue();
+		
+		String decrypted = encryptionService.AESDecrypt(tokenString);
+		String[] result = decrypted.split(":");
+		Long id = Long.parseLong(result[0]);
+		Long token = Long.parseLong(result[1]);
+		Optional<AutoLoginData> data = autoLoginDataRepository.findById(id);
+		if (data.isPresent() && data.get().getToken().equals(token) && data.get().getExpirationTime() > System.currentTimeMillis()) {
+		    //found data and it does not expire.
+		    return true;
+		}
+        
+        response.getWriter().write("false");
+        return false;
     }
 }
 

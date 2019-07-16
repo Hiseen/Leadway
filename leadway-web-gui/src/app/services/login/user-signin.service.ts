@@ -11,7 +11,8 @@ export const USER_SIGNOUT_ENDPOINT = 'logout';
 export interface LoginRegisterResponse {
   code: number;
   error?: string;
-  data?: string;
+  token?: string;
+  userID?: string;
 }
 
 @Injectable({
@@ -59,6 +60,7 @@ export class UserSigninService {
 
     // clean the data
     localStorage.removeItem('tokenID');
+    localStorage.removeItem('userID');
 
     const requestUrl = `${environment.apiUrl}/${USER_SIGNIN_ENDPOINT}`;
     this.http.post<LoginRegisterResponse>(
@@ -73,9 +75,8 @@ export class UserSigninService {
       res => {
         if (res.code === 0) {
           // saves login token in local storage
-          if (res.data) {
-            localStorage.setItem('tokenID', res.data);
-          }
+          localStorage.setItem('tokenID', res.token);
+          localStorage.setItem('userID', res.userID);
           this.router.navigate(['main']);
 
         } else {
@@ -108,13 +109,16 @@ export class UserSigninService {
     }
 
     localStorage.removeItem('tokenID');
-
-    console.log('Local token = ' + localToken);
+    const userID = localStorage.getItem('userID');
+    if (!userID) {
+      this.router.navigate(['signin']);
+      return;
+    }
 
     const requestUrl = `${environment.apiUrl}/${USER_SIGNOUT_ENDPOINT}`;
     this.http.post<LoginRegisterResponse>(
       requestUrl,
-      JSON.stringify({token: localToken}),
+      JSON.stringify({id: userID}),
       {
         headers: {
           'Content-Type': 'application/json'

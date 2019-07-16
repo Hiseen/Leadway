@@ -131,12 +131,15 @@ public class UserService {
 			data.setExpirationTime(System.currentTimeMillis() + expirationTime);
 			data.setRemember(rememberMe);
 			autoLoginDataRepository.save(data);
-			result.put("data", saltedToken);
+			result.put("token", saltedToken);
 			
 			// set cookie for the request, 60 * 60 = 1 hour (only for not remembered cookie)
 			int cookieExpiryDate = 60 * 60;
 			this.setTokenCookie(httpResponse, saltedToken, rememberMe, cookieExpiryDate);
 
+			// all requests afterwards uses userID (and use cookie for verification)
+			result.put("userID", foundUser.getId());
+			
 			return result;
 		}
 	}
@@ -177,14 +180,11 @@ public class UserService {
 	public ObjectNode logoutUser(ObjectNode logoutInfo, HttpServletResponse httpResponse) 
 			throws BadPaddingException, IllegalBlockSizeException, DecoderException {
 		ObjectNode result = new ObjectMapper().createObjectNode();
-		String saltedToken = logoutInfo.get("token").asText();
-		String decryptedToken =  encryptionService.AESDecrypt(saltedToken);
-		String[] splitedToken = decryptedToken.split(":");
-		
-		Long id = Long.parseLong(splitedToken[0]);
-		
-		autoLoginDataRepository.deleteById(id);
-		this.removeTokenCookie(httpResponse, saltedToken);
+		long userID = logoutInfo.get("id").asLong();
+//		String saltedToken = logoutInfo.get("token").asText();
+				
+		autoLoginDataRepository.deleteById(userID);
+		this.removeTokenCookie(httpResponse, "");
 		
 		result.put("code", 0);
 		

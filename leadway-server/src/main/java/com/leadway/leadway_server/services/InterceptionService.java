@@ -24,7 +24,7 @@ public class InterceptionService implements HandlerInterceptor {
     @Autowired
     EncryptionService encryptionService;
 
-    private final String[] passPaths={"/error", "/user-auth" , "/login", "/register", "logout"};
+    private final String[] passPaths={"/error", "/user-auth" , "/login", "/register"};
 
 
     @Override

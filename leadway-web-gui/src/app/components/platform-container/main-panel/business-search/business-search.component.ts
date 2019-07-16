@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'leadway-business-search',
@@ -7,9 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BusinessSearchComponent implements OnInit {
 
-  constructor() { }
+  public currentQuery = '';
+  public currentLocation = '';
+
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.route.queryParamMap.subscribe(params => {
+      console.log('Activate route event occured');
+      console.log(params);
+
+      this.currentQuery = params.get('query');
+      this.currentLocation = params.get('location');
+    });
   }
 
 }

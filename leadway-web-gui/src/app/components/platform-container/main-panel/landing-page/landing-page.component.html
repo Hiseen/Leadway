@@ -1,1 +1,80 @@
-<p>landing-page works!</p>
+<div class="landing-page-container">
+  <div id="leadWayLandingCarousel" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+      <li data-target="#leadWayLandingCarousel" data-slide-to="0" class="active"></li>
+      <li data-target="#leadWayLandingCarousel" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="item-background image1"></div>
+        <div class="carousel-caption">
+          <h3>Outsourcing</h3>
+          <p>Companies can register a problem or a project on our platform and outsource
+            to other companies using our platform.
+          </p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="item-background image2"></div>
+        <div class="carousel-caption">
+          <h3>Reviews</h3>
+          <p>For companies that decide to accept the cases from other companies, users
+            and experts can leave reviews to aid requesters' decision.
+          </p>
+        </div>
+      </div>
+    </div>
+    <a class="carousel-control-prev" href="#leadWayLandingCarousel" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#leadWayLandingCarousel" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+
+  <div class="leadway-company-info-container">
+    <div class="leadway-landing ">
+      <h3 class="landing-browse-header">Browse Requests by Category</h3>
+      <div class="categories-container">
+        <div class="category-item" (click)="categoryNavigate('home')">
+          <div class="category-icon"><i class="fa fa-wrench" aria-hidden="true"></i></div>
+          <div class="category-text">Home Services</div>
+        </div>
+        <div class="category-item" (click)="categoryNavigate('disability')">
+          <div class="category-icon"><i class="fa fa-wheelchair" aria-hidden="true"></i></div>
+          <div class="category-text">Disability Services</div>
+        </div>
+        <div class="category-item" (click)="categoryNavigate('transport')">
+          <div class="category-icon"><i class="fa fa-car" aria-hidden="true"></i></div>
+          <div class="category-text">Transportation</div>
+        </div>
+        <div class="category-item" (click)="categoryNavigate('business')">
+          <div class="category-icon"><i class="fa fa-file" aria-hidden="true"></i></div>
+          <div class="category-text">Business Services</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="leadway-landing-page-footer">
+    <div class="leadway-landing">
+      <div class="footer-container">
+        <div class="footer-item">
+          <div><strong>Mobile Number</strong></div>
+          <div>(939) 244-4444</div>
+        </div>
+        <div class="footer-item">
+          <div><strong>Email Address</strong></div>
+          <div>123@henry.com</div>
+        </div>
+        <div class="footer-item">
+          <div><strong>Location</strong></div>
+          <div>Henry ave. Hawaii 98303</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

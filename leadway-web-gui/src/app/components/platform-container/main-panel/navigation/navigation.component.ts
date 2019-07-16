@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { UserSigninService } from 'src/app/services/login/user-signin.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'leadway-navigation',
@@ -14,7 +15,8 @@ export class NavigationComponent implements OnInit {
 
   public searchFormGroup: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private userSigninService: UserSigninService) {
+  constructor(private formBuilder: FormBuilder, private userSigninService: UserSigninService,
+              private router: Router) {
     this.searchFormGroup = formBuilder.group({
       query: new FormControl('', Validators.compose([
 
@@ -46,6 +48,17 @@ export class NavigationComponent implements OnInit {
 
   public logoutUser(): void {
     this.userSigninService.signOutUser();
+  }
+
+  /**
+   * When user search something in the form in the navigation bar,
+   *  navigate them to a new search path.
+   */
+  public submitSearch(): void {
+    if (this.searchFormGroup.get('query').value === '') {
+      return;
+    }
+    this.router.navigate(['search'], {queryParams: this.searchFormGroup.value});
   }
 
 }

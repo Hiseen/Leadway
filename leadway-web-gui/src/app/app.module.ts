@@ -15,6 +15,10 @@ import { SignupContainerComponent } from './components/platform-container/signup
 import { FooterComponent } from './components/platform-container/signup-container/footer/footer.component';
 import { InfoFormComponent } from './components/platform-container/signup-container/info-form/info-form.component';
 import { TopBarComponent } from './components/platform-container/signup-container/top-bar/top-bar.component';
+import { NavigationComponent } from './components/platform-container/main-panel/navigation/navigation.component';
+import { BusinessSearchComponent } from './components/platform-container/main-panel/business-search/business-search.component';
+import { BusinessDetailComponent } from './components/platform-container/main-panel/business-detail/business-detail.component';
+import { LandingPageComponent } from './components/platform-container/main-panel/landing-page/landing-page.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +29,11 @@ import { TopBarComponent } from './components/platform-container/signup-containe
     FooterComponent,
     InfoFormComponent,
     TopBarComponent,
-    SignupContainerComponent
+    SignupContainerComponent,
+    NavigationComponent,
+    BusinessSearchComponent,
+    BusinessDetailComponent,
+    LandingPageComponent
   ],
   imports: [
     BrowserModule,

@@ -18,6 +18,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 @RestController
@@ -27,24 +29,34 @@ public class UserController {
 	private UserService service;
 	
 	@RequestMapping(method=RequestMethod.POST, value="/register")
-	public ObjectNode register(@RequestBody String request) throws IOException, InvalidKeySpecException, MessagingException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+	public ObjectNode register(@RequestBody String request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) 
+			throws IOException, InvalidKeySpecException, MessagingException, NoSuchPaddingException, InvalidKeyException, 
+			NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+		
 		ObjectNode signUpForm = (ObjectNode) new ObjectMapper().readTree(request);
-		System.out.println("Sign Up");
-		System.out.println(signUpForm);
 		return service.createNewUserEntities(signUpForm);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/login")
-	public ObjectNode signIn(@RequestBody String request) throws IOException, InvalidKeySpecException {		
+	public ObjectNode signIn(@RequestBody String request,HttpServletRequest httpRequest, HttpServletResponse httpResponse) 
+			throws IOException, InvalidKeySpecException, BadPaddingException, IllegalBlockSizeException {
+		
 		ObjectNode signInForm = (ObjectNode) new ObjectMapper().readTree(request);
-		System.out.println("Sign In");
-		System.out.println(signInForm);
-		return service.loginUser(signInForm);
+		ObjectNode result = service.loginUser(signInForm, httpResponse);
+		return result;
+	}
+	
+	@RequestMapping(method=RequestMethod.POST, value="logout")
+	public ObjectNode signOut(@RequestBody String request,HttpServletRequest httpRequest, HttpServletResponse httpResponse) 
+			throws IOException, BadPaddingException, IllegalBlockSizeException, DecoderException {
+		ObjectNode logoutInfo = (ObjectNode) new ObjectMapper().readTree(request);
+		ObjectNode result = service.logoutUser(logoutInfo, httpResponse);
+		return result;
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value="/verify")
-	public ObjectNode verifyUser(@RequestParam("code") String code) throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, DecoderException, InvalidAlgorithmParameterException {
+	public ObjectNode verifyUser(@RequestParam("code") String code) throws NoSuchPaddingException, BadPaddingException, 
+		InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, DecoderException, InvalidAlgorithmParameterException {
 		return service.verifyUser(code);
 	}
-	
 }

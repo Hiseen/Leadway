@@ -1,9 +1,12 @@
 package com.leadway.leadway_server.services;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.DecoderException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +24,18 @@ public class UserAuthenticationService {
 	@Autowired
 	private AutoLoginDataRepository autoLoginDataRepository;
 	
-	public boolean verifyToken(String frontEndToken) throws BadPaddingException, IllegalBlockSizeException, DecoderException {
+	public boolean verifyToken(String frontEndToken, HttpServletResponse httpResponse)  {
 		
-		String decryptedToken = encryptionService.AESDecrypt(frontEndToken);
+		String decryptedToken;
+		try {
+			decryptedToken = encryptionService.AESDecrypt(frontEndToken);
+		} catch (BadPaddingException | IllegalBlockSizeException | DecoderException e) {
+			// TODO Auto-generated catch block
+			return false;
+		}
 		String[] splitedToken = decryptedToken.split(":");
+		
+		
 		Long id = Long.parseLong(splitedToken[0]);
 		Long token = Long.parseLong(splitedToken[1]);
 		Optional<AutoLoginData> data = autoLoginDataRepository.findById(id);
@@ -34,8 +45,15 @@ public class UserAuthenticationService {
 				//found data and it does not expire.
 
 				// update token time whenever user uses it;
-				currentLoginData.setExpirationTime(System.currentTimeMillis() + (7*24*60*60*1000));
+				boolean rememberMe = currentLoginData.isRemember();
+				// token lives 7 days if remember is selected, else 1 hours
+				long expirationTime = rememberMe ? TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS) : 
+					TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS);
+				
+				currentLoginData.setExpirationTime(System.currentTimeMillis() + expirationTime);
 				autoLoginDataRepository.save(currentLoginData);
+				
+				this.setTokenCookie(httpResponse, frontEndToken, rememberMe, 60 * 60);
 				return true;	
 			} else {
 				// expired data is deleted
@@ -45,5 +63,16 @@ public class UserAuthenticationService {
 		}
 		
 		return false;
+	}
+	
+	private void setTokenCookie(HttpServletResponse httpResponse, String token, boolean rememberMe, int expiry) {
+		Cookie cookie = new Cookie("token", token);
+		// if remember me is not selected when login, cookie will expire, else the cookie is permanent
+		if (!rememberMe) {
+			cookie.setMaxAge(expiry);			
+		}
+		//cookie.setSecure(true);  // requires HTTPS?
+		cookie.setPath("/"); // work for whole domain
+		httpResponse.addCookie(cookie);
 	}
 }

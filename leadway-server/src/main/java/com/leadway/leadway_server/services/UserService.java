@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import javax.crypto.*;
 import javax.mail.MessagingException;
@@ -108,25 +109,37 @@ public class UserService {
 			JsonNode userJson = new ObjectMapper().valueToTree(foundUser);
 			result.put("code", 0);
 			
-			// only stores token into DB when rememberMe is selected, if not
-			//	frontend will use session token (will timeout when user exit the tab / browser)
-			if (rememberMe) {
-				Long token = new SecureRandom().nextLong();
-				String tokenString = foundUser.getId() + ":" + token.toString();
-				String saltedToken = encryptionService.AESEncrypt(tokenString);
-				Optional<AutoLoginData> foundData = autoLoginDataRepository.findById(foundUser.getId());
-				AutoLoginData data = new AutoLoginData();
-				if (foundData.isPresent()) {
-					data = foundData.get();
-				} else {
-					data.setUser(foundUser);
-				}
-				data.setToken(token);
-				data.setExpirationTime(System.currentTimeMillis() + 7*24*60*60*1000);
-				autoLoginDataRepository.save(data);
-				result.put("data", saltedToken);
-			}
+			// token lives 7 days if remember is selected, else 1 hours
+			long expirationTime = rememberMe ? TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS) : 
+				TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS);
+			
+			Long token = new SecureRandom().nextLong();
+			String tokenString = foundUser.getId() + ":" + token.toString();
+			String saltedToken = encryptionService.AESEncrypt(tokenString);
+			
+			System.out.println("Sign IN token = " + saltedToken);
 
+			
+			Optional<AutoLoginData> foundData = autoLoginDataRepository.findById(foundUser.getId());
+			AutoLoginData data = new AutoLoginData();
+			if (foundData.isPresent()) {
+				data = foundData.get();
+			} else {
+				data.setUser(foundUser);
+			}
+			data.setToken(token);
+			data.setExpirationTime(System.currentTimeMillis() + expirationTime);
+			data.setRemember(rememberMe);
+			autoLoginDataRepository.save(data);
+			result.put("token", saltedToken);
+			
+			// set cookie for the request, 60 * 60 = 1 hour (only for not remembered cookie)
+			int cookieExpiryDate = 60 * 60;
+			this.setTokenCookie(httpResponse, saltedToken, rememberMe, cookieExpiryDate);
+
+			// all requests afterwards uses userID (and use cookie for verification)
+			result.put("userID", foundUser.getId());
+			
 			return result;
 		}
 	}
@@ -163,12 +176,35 @@ public class UserService {
 		}
 		return result;
 	}
+	
+	public ObjectNode logoutUser(ObjectNode logoutInfo, HttpServletResponse httpResponse) 
+			throws BadPaddingException, IllegalBlockSizeException, DecoderException {
+		ObjectNode result = new ObjectMapper().createObjectNode();
+		long userID = logoutInfo.get("id").asLong();
+//		String saltedToken = logoutInfo.get("token").asText();
+				
+		autoLoginDataRepository.deleteById(userID);
+		this.removeTokenCookie(httpResponse, "");
+		
+		result.put("code", 0);
+		
+		return result;
+	}
 
-	private void SetLoginToken(HttpServletResponse httpResponse,String token,int expiry)
-	{
+	private void setTokenCookie(HttpServletResponse httpResponse, String token, boolean rememberMe, int expiry) {
 		Cookie cookie = new Cookie("token", token);
-		cookie.setMaxAge(expiry);
+		// if remember me is not selected when login, cookie will expire, else the cookie is permanent
+		if (!rememberMe) {
+			cookie.setMaxAge(expiry);			
+		}
 		//cookie.setSecure(true);  // requires HTTPS?
+		cookie.setPath("/"); // work for whole domain
+		httpResponse.addCookie(cookie);
+	}
+	
+	private void removeTokenCookie(HttpServletResponse httpResponse, String token) {
+		Cookie cookie = new Cookie("token", token);
+		cookie.setMaxAge(0);		
 		cookie.setPath("/"); // work for whole domain
 		httpResponse.addCookie(cookie);
 	}

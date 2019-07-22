@@ -11,13 +11,21 @@ import { PlatformContainerComponent } from './components/platform-container/plat
 import { SigninContainerComponent } from './components/platform-container/signin-container/signin-container.component';
 import { MainPanelComponent } from './components/platform-container/main-panel/main-panel.component';
 import { HttpClientModule } from '@angular/common/http';
+import { NavigationComponent } from './components/platform-container/main-panel/navigation/navigation.component';
+import { BusinessSearchComponent } from './components/platform-container/main-panel/business-search/business-search.component';
+import { BusinessDetailComponent } from './components/platform-container/main-panel/business-detail/business-detail.component';
+import { LandingPageComponent } from './components/platform-container/main-panel/landing-page/landing-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PlatformContainerComponent,
     SigninContainerComponent,
-    MainPanelComponent
+    MainPanelComponent,
+    NavigationComponent,
+    BusinessSearchComponent,
+    BusinessDetailComponent,
+    LandingPageComponent
   ],
   imports: [
     BrowserModule,

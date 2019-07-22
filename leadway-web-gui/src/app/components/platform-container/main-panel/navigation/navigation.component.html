@@ -1,0 +1,70 @@
+<nav class="leadway-navigation-body navbar sticky-top navbar-expand-lg navbar-light bg-light">
+  <!-- navigation header -->
+  <a [ngClass]="{'hidden-container': showHiddenSearchBar}"
+    class="navbar-brand navigation-logo" href="/">Leadway  </a>
+
+  <!-- navigation search bar -->
+  <form [ngClass]="{'hidden-container': !showHiddenSearchBar}"
+    class="form-inline minimized-navigation-form navigation-form" [formGroup]="searchFormGroup">
+
+    <div class="form-container input-group">
+
+      <button class="back-button btn btn-outline-secondary d-inline d-md-none"
+          type="submit" (click)="miniBackClick()">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+      </button>
+      <!-- location search item -->
+
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Find</span>
+      </div>
+
+      <input class="search-box form-control" type="search" placeholder="Delivery, Tutoring"
+        aria-label="Search" formControlName="query">
+
+      <!-- location input group -->
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Near</span>
+      </div>
+      <input class="search-box form-control" type="search" placeholder="Irvine, CA"
+        aria-label="Search" formControlName="location">
+
+      <button class="search-button btn btn-outline-secondary" type="submit" (click)="submitSearch()" >
+        <i class="fa fa-search" aria-hidden="true"></i>
+      </button>
+    </div>
+  </form>
+
+  <!-- navigation utilities on the right -->
+  <div [ngClass]="{'hidden-container': showHiddenSearchBar}" class="navigation-utilities">
+    <div class="search-utility d-inline d-md-none">
+      <button class="search-utility-button btn btn-outline-secondary" type="submit"
+        (click)="miniSearchClick()">
+        <i class="fa fa-search" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="user-utility dropdown d-inline">
+      <button class="user-button btn btn btn-success" type="submit" id="userDropdownMenu"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{userInitial}}</button>
+
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdownMenu">
+        <div class="dropdown-account-header">
+          <div class="dropdown-user-icon">
+            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+          </div>
+          <div class="dropdown-user-info">
+            <div class="account-name">Henry Chen</div>
+            <div class="account-email">henry@gmail.com</div>
+          </div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item">Manage Your Account</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item">View Recent Payments</a>
+        <a class="dropdown-item">View Subscribed Businesses</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" (click)="logoutUser()">Sign Out</a>
+      </div>
+    </div>
+  </div>
+</nav>

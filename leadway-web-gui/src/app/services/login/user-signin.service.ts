@@ -6,11 +6,13 @@ import { Router } from '@angular/router';
 
 export const USER_REGISTRATION_ENDPOINT = 'register';
 export const USER_SIGNIN_ENDPOINT = 'login';
+export const USER_SIGNOUT_ENDPOINT = 'logout';
 
 export interface LoginRegisterResponse {
   code: number;
   error?: string;
-  data?: string;
+  token?: string;
+  userID?: string;
 }
 
 @Injectable({
@@ -50,7 +52,15 @@ export class UserSigninService {
     );
   }
 
+  /**
+   * This method signs in the user based on the user data provided
+   *  in the form.
+   */
   public signInUser(signInForm: object): void {
+
+    // clean the data
+    localStorage.removeItem('tokenID');
+    localStorage.removeItem('userID');
 
     const requestUrl = `${environment.apiUrl}/${USER_SIGNIN_ENDPOINT}`;
     this.http.post<LoginRegisterResponse>(
@@ -64,24 +74,58 @@ export class UserSigninService {
     ).subscribe(
       res => {
         if (res.code === 0) {
-
           // saves login token in local storage
-          if (res.data) {
-            localStorage.setItem('tokenID', res.data);
-          } else {
-            localStorage.removeItem('tokenID');
-          }
-          sessionStorage.setItem('verifiedToken', 'true');
+          localStorage.setItem('tokenID', res.token);
+          localStorage.setItem('userID', res.userID);
           this.router.navigate(['main']);
-        } else {
-          sessionStorage.setItem('verifiedToken', 'false');
-          localStorage.removeItem('tokenID');
 
+        } else {
           this.snackBar.open(res.error, 'ok', {
             duration: 10000
           });
         }
       },
+      error => console.log(error)
+    );
+  }
+
+  /**
+   * This method will sign out the current user from Leadway.
+   *
+   * The user token stored in the localstorage and sessionstorage will be removed.
+   *
+   * If a token is stored in the frontend, then an http request will be sent
+   *  to remove the token stored inside the DB.
+   */
+  public signOutUser(): void {
+
+    const localToken = localStorage.getItem('tokenID');
+
+    // if there is no local token at the beginning (no remember me selected),
+    //  return immediately without sending the request to remove token from DB
+    if (!localToken) {
+      this.router.navigate(['signin']);
+      return;
+    }
+
+    localStorage.removeItem('tokenID');
+    const userID = localStorage.getItem('userID');
+    if (!userID) {
+      this.router.navigate(['signin']);
+      return;
+    }
+
+    const requestUrl = `${environment.apiUrl}/${USER_SIGNOUT_ENDPOINT}`;
+    this.http.post<LoginRegisterResponse>(
+      requestUrl,
+      JSON.stringify({id: userID}),
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    ).subscribe(
+      res => this.router.navigate(['signin']),
       error => console.log(error)
     );
   }

@@ -23,7 +23,7 @@ export class UserAuthService {
 
     this.checkValidTokenID(currentToken).subscribe(
       tokenStatus => {
-        sessionStorage.setItem('verifiedToken', JSON.stringify(tokenStatus));
+        // console.log('tokenStatus: ' + tokenStatus);
         this.tokenVerificationStream.next(tokenStatus);
       }
     );

@@ -4,6 +4,11 @@ import { Observable } from 'rxjs';
 import { UserAuthService } from '../services/user-auth/user-auth.service';
 import { map, tap, take } from 'rxjs/operators';
 
+/**
+ * This is mainly used for components other than sign-in / sign-up
+ *  to authenticate if the user is correct to persist login status
+ *  even if the user go to the next route or close the browser.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -15,10 +20,6 @@ export class LoginAuthGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    // verifiedToken is a boolean variable (session variable disappear when user
-    //  closes the browser / tab)
-    const isSessionVerified = JSON.parse(sessionStorage.getItem('verifiedToken'));
-    if (isSessionVerified) { return true; }
 
     // tokenID is a encrypted user info to verify user if user selects 'remember me'.
     //  this info is stored in local storage so that it is still there when browser closees
@@ -28,6 +29,9 @@ export class LoginAuthGuard implements CanActivate {
       this.router.navigate(['signin']);
       return false;
     }
+
+    console.log('Continue token verification now!');
+    console.log('Token = ' + currentTokenID);
 
     const verification = this.userAuthService.getTokenVerificationStream()
       .pipe(

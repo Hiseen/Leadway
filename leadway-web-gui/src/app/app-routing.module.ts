@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SigninContainerComponent } from './components/platform-container/signin-container/signin-container.component';
 import { MainPanelComponent } from './components/platform-container/main-panel/main-panel.component';
-import { EnterUserInfoComponent } from './components/user-info-container/enter-user-info/enter-user-info.component';
+import { SignupContainerComponent } from './components/platform-container/signup-container/signup-container.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/signin', pathMatch: 'full' },
   { path: 'signin', component: SigninContainerComponent },
   { path: 'main', component: MainPanelComponent },
-  { path: 'signup', component: EnterUserInfoComponent}
+  { path: 'signup', component: SignupContainerComponent}
 ];
 
 @NgModule({

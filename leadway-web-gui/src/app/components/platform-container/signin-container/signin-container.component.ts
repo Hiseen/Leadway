@@ -39,8 +39,12 @@ export class SigninContainerComponent implements OnInit {
     this.signInFormGroup.get('password').setValue('');
   }
 
+  /**
+   * This method will use angular's router to navigate
+   *  user to the signup container page.
+   */
   public signUpToggle(): void {
-    window.location.href = '/signup';
+    this.router.navigate(['signup']);
   }
 
   public signInUser(): void {

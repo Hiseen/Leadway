@@ -11,10 +11,10 @@ import { PlatformContainerComponent } from './components/platform-container/plat
 import { SigninContainerComponent } from './components/platform-container/signin-container/signin-container.component';
 import { MainPanelComponent } from './components/platform-container/main-panel/main-panel.component';
 import { HttpClientModule } from '@angular/common/http';
-import { EnterUserInfoComponent } from './components/user-info-container/enter-user-info/enter-user-info.component';
-import { TopBarComponent } from './components/user-info-container/top-bar/top-bar.component';
-import { InfoFormComponent } from './components/user-info-container/info-form/info-form.component';
-import { FooterComponent } from './components/user-info-container/footer/footer.component';
+import { SignupContainerComponent } from './components/platform-container/signup-container/signup-container.component';
+import { FooterComponent } from './components/platform-container/signup-container/footer/footer.component';
+import { InfoFormComponent } from './components/platform-container/signup-container/info-form/info-form.component';
+import { TopBarComponent } from './components/platform-container/signup-container/top-bar/top-bar.component';
 
 @NgModule({
   declarations: [
@@ -22,10 +22,10 @@ import { FooterComponent } from './components/user-info-container/footer/footer.
     PlatformContainerComponent,
     SigninContainerComponent,
     MainPanelComponent,
-    EnterUserInfoComponent,
-    TopBarComponent,
+    FooterComponent,
     InfoFormComponent,
-    FooterComponent
+    TopBarComponent,
+    SignupContainerComponent
   ],
   imports: [
     BrowserModule,

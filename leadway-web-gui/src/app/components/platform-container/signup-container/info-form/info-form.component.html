@@ -13,14 +13,13 @@
             be able to access different types of information in Leadway.
           </div>
           <mat-form-field appearance="outline">
-            <mat-label>User Type</mat-label>
+            <mat-label>Leadway User Type</mat-label>
             <mat-select formControlName="customertype">
               <mat-option value="0">Regular User</mat-option>
               <mat-option value="1">Expert</mat-option>
               <mat-option value="2">Enterprise</mat-option>
               <mat-option value="3">Administrator</mat-option>
             </mat-select>
-            <mat-error>Please choose an animal</mat-error>
           </mat-form-field>
 
         </div>
@@ -63,7 +62,7 @@
                     formControlName="firstname" required>
                 <mat-error class="error-message" *ngIf="signUpFormGroup.get('firstname').hasError('required')
                     && (signUpFormGroup.get('firstname').dirty || signUpFormGroup.get('firstname').touched)">
-                    First Name is <strong>required</strong>.
+                    First name is <strong>required</strong>.
                 </mat-error>
                 <button mat-button *ngIf="signUpFormGroup.value.firstname" matSuffix mat-icon-button
                     aria-label="Clear" (click)="resetSignUpFirstname()">
@@ -76,7 +75,7 @@
                     formControlName="lastname" required>
                 <mat-error class="error-message" *ngIf="signUpFormGroup.get('lastname').hasError('required')
                     && (signUpFormGroup.get('lastname').dirty || signUpFormGroup.get('lastname').touched)">
-                    Last Name is <strong>required</strong>.
+                    Last name is <strong>required</strong>.
                 </mat-error>
                 <button mat-button *ngIf="signUpFormGroup.value.lastname" matSuffix mat-icon-button
                     aria-label="Clear" (click)="resetSignUpLastname()">
@@ -92,7 +91,7 @@
                 formControlName="companyname" required>
             <mat-error class="error-message" *ngIf="signUpFormGroup.get('companyname').hasError('required')
                 && (signUpFormGroup.get('companyname').dirty || signUpFormGroup.get('companyname').touched)">
-                Company Name is <strong>required</strong>.
+                Company name is <strong>required</strong>.
             </mat-error>
             <button mat-button *ngIf="signUpFormGroup.value.companyname" matSuffix mat-icon-button
                 aria-label="Clear" (click)="resetSignUpCompanyname()">
@@ -105,7 +104,7 @@
                 formControlName="webaddress" required>
             <mat-error class="error-message" *ngIf="signUpFormGroup.get('webaddress').hasError('required')
                 && (signUpFormGroup.get('webaddress').dirty || signUpFormGroup.get('webaddress').touched)">
-                Company's Web Address is <strong>required</strong>.
+                Company's web address is <strong>required</strong>.
             </mat-error>
             <button mat-button *ngIf="signUpFormGroup.value.webaddress" matSuffix mat-icon-button
                 aria-label="Clear" (click)="resetSignUpWebaddress()">
@@ -161,7 +160,7 @@
                   formControlName="zip" required>
               <mat-error class="error-message" *ngIf="signUpFormGroup.get('zip').hasError('required')
                   && (signUpFormGroup.get('zip').dirty || signUpFormGroup.get('zip').touched)">
-                  Zip Code is <strong>required</strong>.
+                  Zip code is <strong>required</strong>.
               </mat-error>
               <button mat-button *ngIf="signUpFormGroup.value.zip" matSuffix mat-icon-button
                   aria-label="Clear" (click)="resetSignUpZip()">
@@ -171,11 +170,15 @@
           </div>
           <mat-form-field appearance="standard">
             <mat-label>Contact Number</mat-label>
-            <input matInput placeholder="(949)123-1234" type="tel" name="phone"
+            <input matInput placeholder="949-123-1234" type="tel" name="phone"
                 formControlName="phone" required>
             <mat-error class="error-message" *ngIf="signUpFormGroup.get('phone').hasError('required')
                 && (signUpFormGroup.get('phone').dirty || signUpFormGroup.get('phone').touched)">
-                Phone Number is <strong>required</strong>.
+                Phone number is <strong>required</strong>.
+            </mat-error>
+            <mat-error class="error-message" *ngIf="signUpFormGroup.get('phone').hasError('pattern')
+                && (signUpFormGroup.get('phone').dirty || signUpFormGroup.get('phone').touched)">
+                Phone number must be in 123-123-1234 format
             </mat-error>
             <button mat-button *ngIf="signUpFormGroup.value.phone" matSuffix mat-icon-button
                 aria-label="Clear" (click)="resetSignUpPhone()">
@@ -221,7 +224,7 @@
                 formControlName="admincode" required>
             <mat-error class="error-message" *ngIf="signUpFormGroup.get('admincode').hasError('required')
                 && (signUpFormGroup.get('admincode').dirty || signUpFormGroup.get('admincode').touched)">
-                Administrator's Code is <strong>required</strong>.
+                Administrator's code is <strong>required</strong>.
             </mat-error>
             <button mat-button *ngIf="signUpFormGroup.value.admincode" matSuffix mat-icon-button
                 aria-label="Clear" (click)="resetSignUpAdmincode()">

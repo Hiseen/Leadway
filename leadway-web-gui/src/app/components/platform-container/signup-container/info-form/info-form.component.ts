@@ -3,25 +3,24 @@ import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms'
 import { Router } from '@angular/router';
 import { UserSigninService } from 'src/app/services/login/user-signin.service';
 
+export const MOBILE_PATTERN = /[0-9\+\-\ ]/;
+
 @Component({
   selector: 'leadway-info-form',
   templateUrl: './info-form.component.html',
   styleUrls: ['./info-form.component.scss']
 })
 export class InfoFormComponent implements OnInit {
-
-  // default the component starts at sign up as a new customer(enterprise 1, expert 2)
-  public customer = 0;
-
   // reactive form validators for signin and signup form
   public signUpFormGroup: FormGroup;
 
   constructor(private router: Router, private formBuilder: FormBuilder,
-    private userSigninService: UserSigninService) {
-
-    let MOBILE_PATTERN = /[0-9\+\-\ ]/;
+              private userSigninService: UserSigninService) {
 
     this.signUpFormGroup = formBuilder.group({
+      // default the component starts at sign up as a new customer
+      //  (regular user 0, expert 1, enterprise 2, admin 3)
+      customertype: '0',
       email: new FormControl('', Validators.compose([
         Validators.email,
         Validators.required
@@ -51,26 +50,28 @@ export class InfoFormComponent implements OnInit {
         Validators.required,
         Validators.pattern(MOBILE_PATTERN)
       ])),
+      // for company type user
       companyname: new FormControl('', Validators.compose([
         Validators.required
       ])),
-      summary: new FormControl('', Validators.compose([
+      webaddress: new FormControl('', Validators.compose([
         Validators.required
       ])),
+      // for expert type user
       experience: new FormControl('', Validators.compose([
         Validators.required
       ])),
       certification: new FormControl('', Validators.compose([
         Validators.required
+      ])),
+      // for admin type user
+      admincode: new FormControl('', Validators.compose([
+        Validators.required
       ]))
     });
   }
 
-  ngOnInit() {
-  }
-
-  submitted = false;
-  onSubmit() {this.submitted = true;}
+  ngOnInit() { }
 
   public resetSignUpEmail(): void {
     this.signUpFormGroup.get('email').setValue('');
@@ -87,7 +88,7 @@ export class InfoFormComponent implements OnInit {
   public resetSignUpLastname(): void {
     this.signUpFormGroup.get('lastname').setValue('');
   }
-  
+
   public resetSignUpStreet(): void {
     this.signUpFormGroup.get('street').setValue('');
   }
@@ -112,8 +113,8 @@ export class InfoFormComponent implements OnInit {
     this.signUpFormGroup.get('companyname').setValue('');
   }
 
-  public resetSignUpSummary(): void {
-    this.signUpFormGroup.get('summary').setValue('');
+  public resetSignUpWebaddress(): void {
+    this.signUpFormGroup.get('webaddress').setValue('');
   }
 
   public resetSignUpExperience(): void {
@@ -124,20 +125,26 @@ export class InfoFormComponent implements OnInit {
     this.signUpFormGroup.get('certification').setValue('');
   }
 
+  public resetSignUpAdmincode(): void {
+    this.signUpFormGroup.get('admincode').setValue('');
+  }
+
   public registerNewUser(): void {
-    this.userSigninService.registerUser(this.signUpFormGroup.value);
+    console.log(this.signUpFormGroup.value);
+    // this.userSigninService.registerUser(this.signUpFormGroup.value);
   }
 
-  public EnterpriseToggle(): void {
-    this.customer = 1;
-  }
-
-  public ExpertToggle(): void {
-    this.customer = 2;
-  }
-
-  public NewUserToggle(): void {
-    this.customer = 0;
+  public getUsertypeTitle(): string {
+    const currentType = this.signUpFormGroup.get('customertype').value;
+    if (currentType === '0') {
+      return 'User';
+    } else if (currentType === '1') {
+      return 'Expert';
+    } else if (currentType === '2') {
+      return 'Enterprise';
+    } else {
+      return 'Adminstrator';
+    }
   }
 
 }

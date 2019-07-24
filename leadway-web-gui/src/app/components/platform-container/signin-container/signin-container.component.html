@@ -35,7 +35,10 @@
 
       <mat-checkbox class="mat-form-checkbox" formControlName="rememberMe">Remember Me</mat-checkbox>
 
-      <button class="sign-in-button" mat-stroked-button type="submit" (click)="signInUser()">Sign In</button>
+      <button class="sign-in-button" mat-stroked-button type="submit" (click)="signInUser()">
+        <span *ngIf="!userSigninService.getSignInClicked()">Sign In</span>
+        <span *ngIf="userSigninService.getSignInClicked()"><i class="fa fa-spinner fa-pulse fa-fw"></i></span>
+      </button>
       <div class="form-footer">
         New to Leadway? <span class="toggle-button" (click)="signUpToggle()">Sign Up Now!</span>
       </div>

@@ -232,8 +232,10 @@
             </button>
           </mat-form-field>
           <button class="register-button" mat-stroked-button type="submit" (click)="registerNewUser()">
-            Register
+            <span *ngIf="!userSigninService.getRegisteredClicked()">Register</span>
+            <span *ngIf="userSigninService.getRegisteredClicked()"><i class="fa fa-spinner fa-pulse fa-fw"></i></span>
           </button>
+
         </div>
       </div>
     </form>

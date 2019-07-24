@@ -15,6 +15,8 @@ export class InfoFormComponent implements OnInit {
   // reactive form validators for signin and signup form
   public signUpFormGroup: FormGroup;
 
+  public registerClicked = false;
+
   constructor(private router: Router, private formBuilder: FormBuilder,
               private userSigninService: UserSigninService,
               private snackBar: MatSnackBar) {

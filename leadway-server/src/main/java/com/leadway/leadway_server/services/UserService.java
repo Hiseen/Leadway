@@ -106,6 +106,11 @@ public class UserService {
 		newUser.setType(userType);
 		
 		newUser.setVerified(false);
+		
+		if (isDeveloping) {
+			newUser.setVerified(true);
+		}
+		
 		userRepository.save(newUser);
 		
 		// generates user entity based on the user type (regular, expert, enterprise, admin)
@@ -116,8 +121,6 @@ public class UserService {
 		}
 		
 		result.put("code", 0);
-		result.put("message", "user registered, please verify your account through email");
-		
 		return result;	
 		
 	}

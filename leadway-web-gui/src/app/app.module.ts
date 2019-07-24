@@ -19,6 +19,7 @@ import { NavigationComponent } from './components/platform-container/main-panel/
 import { BusinessSearchComponent } from './components/platform-container/main-panel/business-search/business-search.component';
 import { BusinessDetailComponent } from './components/platform-container/main-panel/business-detail/business-detail.component';
 import { LandingPageComponent } from './components/platform-container/main-panel/landing-page/landing-page.component';
+import { VerifyAccountComponent } from './components/platform-container/signup-container/verify-account/verify-account.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { LandingPageComponent } from './components/platform-container/main-panel
     NavigationComponent,
     BusinessSearchComponent,
     BusinessDetailComponent,
-    LandingPageComponent
+    LandingPageComponent,
+    VerifyAccountComponent
   ],
   imports: [
     BrowserModule,

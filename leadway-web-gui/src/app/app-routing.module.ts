@@ -9,6 +9,8 @@ import { BusinessDetailComponent } from './components/platform-container/main-pa
 import { BusinessSearchComponent } from './components/platform-container/main-panel/business-search/business-search.component';
 import { LoginAuthGuard } from './guards/login-auth.guard';
 import { AutoLoginGuard } from './guards/auto-login.guard';
+import { InfoFormComponent } from './components/platform-container/signup-container/info-form/info-form.component';
+import { VerifyAccountComponent } from './components/platform-container/signup-container/verify-account/verify-account.component';
 
 const routes: Routes = [
   { path: 'signin', component: SigninContainerComponent, canActivate: [AutoLoginGuard] },
@@ -22,7 +24,15 @@ const routes: Routes = [
     ],
     canActivate: [LoginAuthGuard]
   },
-  { path: 'signup', component: SignupContainerComponent, canActivate: [AutoLoginGuard]},
+  {
+    path: 'signup',
+    component: SignupContainerComponent,
+    children: [
+      { path: '', component: InfoFormComponent },
+      { path: 'verification', component: VerifyAccountComponent },
+      { path: '**', redirectTo: '', pathMatch: 'full'}
+    ],
+    canActivate: [AutoLoginGuard]},
   // redirect to main lobby if the path is invalid
   { path: '**', redirectTo: '', pathMatch: 'full'}
 ];

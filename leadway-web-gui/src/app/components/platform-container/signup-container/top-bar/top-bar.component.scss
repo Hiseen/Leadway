@@ -1,0 +1,19 @@
+
+$background-dark: #25315B;
+
+.sign-in-header {
+  font-weight: bold;
+  color: $background-dark;
+}
+
+.signInButtion {
+  font-size: 18px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.signInButtion:hover {
+  color: #3385ff;
+  cursor: pointer;
+  text-decoration: underline;
+}

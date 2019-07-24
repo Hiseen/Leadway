@@ -6,6 +6,8 @@
 
 // angular material theme
 @import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
+@import 'variables';
+@import '../node_modules/font-awesome/scss/font-awesome';
 
 
 body, html {

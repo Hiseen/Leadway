@@ -11,8 +11,16 @@ import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import com.leadway.leadway_server.entities.AdminUser;
 import com.leadway.leadway_server.entities.AutoLoginData;
+import com.leadway.leadway_server.entities.EnterpriseUser;
+import com.leadway.leadway_server.entities.ExpertUser;
+import com.leadway.leadway_server.repositories.AdminUserRepository;
 import com.leadway.leadway_server.repositories.AutoLoginDataRepository;
+import com.leadway.leadway_server.repositories.EnterpriseUserRepository;
+import com.leadway.leadway_server.repositories.ExpertUserRepository;
+import com.leadway.leadway_server.repositories.RegularUserRepository;
+
 import org.apache.commons.codec.DecoderException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,6 +29,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.leadway.leadway_server.entities.LeadwayUser;
+import com.leadway.leadway_server.entities.RegularUser;
 import com.leadway.leadway_server.repositories.UserRepository;
 
 @Component
@@ -28,6 +37,18 @@ public class UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private RegularUserRepository regularUserRepo;
+	
+	@Autowired
+	private ExpertUserRepository expertUserRepo;
+	
+	@Autowired
+	private AdminUserRepository adminUserRepo;
+	
+	@Autowired
+	private EnterpriseUserRepository enterpriseUserRepo;
 
 	@Autowired
 	private AutoLoginDataRepository autoLoginDataRepository;
@@ -40,6 +61,9 @@ public class UserService {
 	
 	// temporary variable to prevent email authentication every single time
 	private boolean isDeveloping = true;
+	
+	// temporary administrator password
+	private String adminPassword = "123leadway123";
 
 	private UserService() {}
 	
@@ -56,31 +80,85 @@ public class UserService {
 		if (userWithIdenticalEmail.size() > 0) {
 			// if email is already used and verified previously, mark this operation is failed
 			LeadwayUser user = userWithIdenticalEmail.get(0);
-			if (user.getType() != 0) {
+			if (user.isVerified()) {
 				result.put("code", 1);
 				result.put("error", "Email already used");
-				return result;
+				return result;				
 			}
 		}
-			
+		
+		int userType = signUpForm.get("customertype").asInt();
+		// administrator
+		if (userType == 3) {
+			String adminCode = signUpForm.get("admincode").asText();
+			if (!adminPassword.equals(adminCode)) {
+				result.put("code", 1);
+				result.put("error", "Administrator code is incorrect");
+				return result;	
+			}
+		}
+
+
 		String userPassword = signUpForm.get("password").asText();
 		String encryptedPassword = encryptionService.PBKDF2Encrypt(userPassword);
 		newUser.setEmail(userEmail);
 		newUser.setPassword(encryptedPassword);
+		newUser.setType(userType);
 		
-		// type 0 = unverified user
-		newUser.setType(0);
+		newUser.setVerified(false);
+		
+		if (isDeveloping) {
+			newUser.setVerified(true);
+		}
+		
 		userRepository.save(newUser);
 		
+		// generates user entity based on the user type (regular, expert, enterprise, admin)
+		this.generateUserType(newUser.getId(), userType, signUpForm);
+
 		if (!isDeveloping) {
 			mailService.sendVerificationMailTo(userEmail, encryptionService.AESEncrypt(newUser.getId().toString()));			
 		}
 		
 		result.put("code", 0);
-		result.put("error", "user registered, please verify your account through email");
-		
 		return result;	
 		
+	}
+	
+	/**
+	 * This method generates the user entity type in the database
+	 * 	based on the user type.
+	 * 
+	 * @param signUpForm
+	 */
+	private void generateUserType(long userID, int userType, ObjectNode signUpForm) {
+		if (userType == 0) {
+			RegularUser newUser = new RegularUser();
+			newUser.setId(userID);
+			newUser.setFirstName(signUpForm.get("firstname").asText());
+			newUser.setLastName(signUpForm.get("lastname").asText());
+			regularUserRepo.save(newUser);
+		} else if (userType == 1) {
+			ExpertUser newUser = new ExpertUser();
+			newUser.setId(userID);
+			newUser.setFirstName(signUpForm.get("firstname").asText());
+			newUser.setLastName(signUpForm.get("lastname").asText());
+			newUser.setExperience(signUpForm.get("experience").asText());
+			newUser.setCertification(signUpForm.get("certification").asText());
+			expertUserRepo.save(newUser);
+		} else if (userType == 2) {
+			EnterpriseUser newUser = new EnterpriseUser();
+			newUser.setId(userID);
+			newUser.setCompanyName(signUpForm.get("companyname").asText());
+			newUser.setWebsite(signUpForm.get("webaddress").asText());
+			enterpriseUserRepo.save(newUser);
+		} else {
+			AdminUser newUser = new AdminUser();
+			newUser.setId(userID);
+			newUser.setFirstName(signUpForm.get("firstname").asText());
+			newUser.setLastName(signUpForm.get("lastname").asText());
+			adminUserRepo.save(newUser);
+		}
 	}
 	
 	public ObjectNode loginUser(ObjectNode signInForm, HttpServletResponse httpResponse) throws InvalidKeySpecException, 
@@ -100,7 +178,7 @@ public class UserService {
 			return result;
 		} else {
 			LeadwayUser foundUser = users.get(0);
-			if (!isDeveloping && foundUser.getType() == 0) {
+			if (!isDeveloping && !foundUser.isVerified()) {
 				result.put("code", 1);
 				result.put("error", "account is not verified yet");
 				return result;
@@ -157,17 +235,17 @@ public class UserService {
 			return result;
 		}
 		System.out.println("verify user with id = "+id);
-		Optional<LeadwayUser> foundUser=userRepository.findById(id);
+		Optional<LeadwayUser> foundUser = userRepository.findById(id);
 		if (!foundUser.isPresent()) {
 			result.put("code", 1);
 			result.put("error","no user found! code = " + code);
 		} else{
 			LeadwayUser user = foundUser.get();
-			if(user.getType() != 0) {
+			if(user.isVerified()) {
 				result.put("error","user already verified! code = " + code);
 				result.put("code", 1);
 			} else{
-				user.setType(1);
+				user.setVerified(true);
 				userRepository.save(user);
 				System.out.println("user verified! code = "+code);
 				result.put("code", 0);

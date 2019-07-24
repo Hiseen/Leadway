@@ -11,12 +11,8 @@ import { UserSigninService } from 'src/app/services/login/user-signin.service';
 })
 export class SigninContainerComponent implements OnInit {
 
-  // default the component starts at sign-in panel
-  public signInNow = true;
-
   // reactive form validators for signin and signup form
   public signInFormGroup: FormGroup;
-  public signUpFormGroup: FormGroup;
 
   constructor(private router: Router, private formBuilder: FormBuilder,
               private userSigninService: UserSigninService) {
@@ -31,15 +27,6 @@ export class SigninContainerComponent implements OnInit {
       rememberMe: new FormControl('')
     });
 
-    this.signUpFormGroup = formBuilder.group({
-      email: new FormControl('', Validators.compose([
-        Validators.email,
-        Validators.required
-      ])),
-      password: new FormControl('', Validators.compose([
-        Validators.required
-      ]))
-    });
   }
 
   ngOnInit() {
@@ -53,23 +40,15 @@ export class SigninContainerComponent implements OnInit {
     this.signInFormGroup.get('password').setValue('');
   }
 
-  public resetSignUpEmail(): void {
-    this.signUpFormGroup.get('email').setValue('');
-  }
-
-  public resetSignUpPassword(): void {
-    this.signUpFormGroup.get('password').setValue('');
-  }
-
+  /**
+   * This method will use angular's router to navigate
+   *  user to the signup container page.
+   */
   public signUpToggle(): void {
-    this.signInNow = !this.signInNow;
+    this.router.navigate(['signup']);
   }
 
   public signInUser(): void {
     this.userSigninService.signInUser(this.signInFormGroup.value);
-  }
-
-  public registerNewUser(): void {
-    this.userSigninService.registerUser(this.signUpFormGroup.value);
   }
 }

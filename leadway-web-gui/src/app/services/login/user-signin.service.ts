@@ -20,11 +20,14 @@ export interface LoginRegisterResponse {
 })
 export class UserSigninService {
 
+  private registeredClicked = false;
+  private signinClicked = false;
+
   constructor(private http: HttpClient, private router: Router,
               private snackBar: MatSnackBar) { }
 
   public registerUser(registrationForm: object): void {
-
+    this.registeredClicked = true;
     const requestUrl = `${environment.apiUrl}/${USER_REGISTRATION_ENDPOINT}`;
     this.http.post<LoginRegisterResponse>(
       requestUrl,
@@ -36,11 +39,9 @@ export class UserSigninService {
       }
     ).subscribe(
       res => {
+        this.registeredClicked = false;
         if (res.code === 0) {
-          // shows pop-up alerts to the user
-          this.snackBar.open('Verify your account in your email', 'confirm', {
-            duration: 5000
-          });
+          this.router.navigate(['signup/verification']);
         } else {
           // when there is an error
           this.snackBar.open(res.error, 'ok', {
@@ -48,8 +49,18 @@ export class UserSigninService {
           });
         }
       },
-      error => console.log(error)
+      error => {
+        this.registeredClicked = false;
+        console.log(error);
+        this.snackBar.open(error, 'ok', {
+          duration: 10000
+        });
+      }
     );
+  }
+
+  public getRegisteredClicked(): boolean {
+    return this.registeredClicked;
   }
 
   /**
@@ -58,6 +69,7 @@ export class UserSigninService {
    */
   public signInUser(signInForm: object): void {
 
+    this.signinClicked = true;
     // clean the data
     localStorage.removeItem('tokenID');
     localStorage.removeItem('userID');
@@ -73,6 +85,7 @@ export class UserSigninService {
       }
     ).subscribe(
       res => {
+        this.signinClicked = false;
         if (res.code === 0) {
           // saves login token in local storage
           localStorage.setItem('tokenID', res.token);
@@ -85,8 +98,18 @@ export class UserSigninService {
           });
         }
       },
-      error => console.log(error)
+      error => {
+        console.log(error);
+        this.signinClicked = false;
+        this.snackBar.open(error, 'ok', {
+          duration: 10000
+        });
+      }
     );
+  }
+
+  public getSignInClicked(): boolean {
+    return this.signinClicked;
   }
 
   /**

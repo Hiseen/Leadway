@@ -12,6 +12,7 @@ public class LeadwayUser {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
+	//	(regular user 0, expert 1, enterprise 2, admin 3)
 	private int type;
 	private String email;
 	private String password;
@@ -19,7 +20,16 @@ public class LeadwayUser {
 	private String city;
 	private String zip;
 	private String phone;
+	private boolean verified;
 	
+	public boolean isVerified() {
+		return verified;
+	}
+
+	public void setVerified(boolean verified) {
+		this.verified = verified;
+	}
+
 	public LeadwayUser() {
 
 	}

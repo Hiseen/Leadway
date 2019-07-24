@@ -1,0 +1,245 @@
+<div class="signup-form-container">
+  <div class="signup-form-intro">
+    <h1 class="signup-form-title">Welcome to Leadway!</h1>
+    <p class="signup-form-explanation">At this point, we need your information for completing the sign-up process, to provide you with the BEST service.</p>
+  </div>
+  <div class="form-container">
+    <form [formGroup]="signUpFormGroup">
+      <div class="signup-form">
+        <div class="step-container">
+          <h3>Step 1: Select User Type</h3>
+          <div class="user-type-explanation">
+            Please Select the user type best suits you, depend on your user type you will
+            be able to access different types of information in Leadway.
+          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Leadway User Type</mat-label>
+            <mat-select formControlName="customertype">
+              <mat-option value="0">Regular User</mat-option>
+              <mat-option value="1">Expert</mat-option>
+              <mat-option value="2">Enterprise</mat-option>
+              <mat-option value="3">Administrator</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        </div>
+        <div class="step-container">
+          <h3>Step 2: Enter {{getUsertypeTitle()}} Information</h3>
+          <mat-form-field appearance="standard">
+            <mat-label>Email</mat-label>
+            <input matInput placeholder="Email" type="email" name="email" formControlName="email" required>
+            <mat-error class="error-message" *ngIf="signUpFormGroup.get('email').hasError('email')
+                && !signUpFormGroup.get('email').hasError('required')
+                && (signUpFormGroup.get('email').dirty || signUpFormGroup.get('email').touched)">
+                Please enter a valid email address
+            </mat-error>
+            <mat-error class="error-message" *ngIf="signUpFormGroup.get('email').hasError('required')
+                && (signUpFormGroup.get('email').dirty || signUpFormGroup.get('email').touched)">
+                Email is <strong>required</strong>.
+            </mat-error>
+            <button mat-button *ngIf="signUpFormGroup.value.email" matSuffix mat-icon-button
+                aria-label="Clear" (click)="resetSignUpEmail()">
+                <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+          <mat-form-field appearance="standard">
+            <mat-label>Password</mat-label>
+            <input matInput placeholder="Password" type="password" name="password"
+                formControlName="password" required>
+            <mat-error class="error-message" *ngIf="signUpFormGroup.get('password').hasError('required')
+                && (signUpFormGroup.get('password').dirty || signUpFormGroup.get('password').touched)">
+                Password is <strong>required</strong>.
+            </mat-error>
+            <button mat-button *ngIf="signUpFormGroup.value.password" matSuffix mat-icon-button
+                aria-label="Clear" (click)="resetSignUpPassword()">
+                <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+          <div *ngIf="signUpFormGroup.get('customertype').value!=='2'" class="name-container">
+            <mat-form-field appearance="standard" class="name-item first-name-item">
+                <mat-label>First Name</mat-label>
+                <input matInput placeholder="Henry" type="text" name="firstname"
+                    formControlName="firstname" required>
+                <mat-error class="error-message" *ngIf="signUpFormGroup.get('firstname').hasError('required')
+                    && (signUpFormGroup.get('firstname').dirty || signUpFormGroup.get('firstname').touched)">
+                    First name is <strong>required</strong>.
+                </mat-error>
+                <button mat-button *ngIf="signUpFormGroup.value.firstname" matSuffix mat-icon-button
+                    aria-label="Clear" (click)="resetSignUpFirstname()">
+                    <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+              <mat-form-field appearance="standard" class="name-item">
+                <mat-label>Last Name</mat-label>
+                <input matInput placeholder="Chen" type="text" name="lastname"
+                    formControlName="lastname" required>
+                <mat-error class="error-message" *ngIf="signUpFormGroup.get('lastname').hasError('required')
+                    && (signUpFormGroup.get('lastname').dirty || signUpFormGroup.get('lastname').touched)">
+                    Last name is <strong>required</strong>.
+                </mat-error>
+                <button mat-button *ngIf="signUpFormGroup.value.lastname" matSuffix mat-icon-button
+                    aria-label="Clear" (click)="resetSignUpLastname()">
+                    <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+          </div>
+
+          <!-- this is unique for company -->
+          <mat-form-field *ngIf="signUpFormGroup.get('customertype').value==='2'" appearance="standard">
+            <mat-label>Business Name</mat-label>
+            <input matInput placeholder="Henry's Dinner" type="text" name="companyname"
+                formControlName="companyname" required>
+            <mat-error class="error-message" *ngIf="signUpFormGroup.get('companyname').hasError('required')
+                && (signUpFormGroup.get('companyname').dirty || signUpFormGroup.get('companyname').touched)">
+                Company name is <strong>required</strong>.
+            </mat-error>
+            <button mat-button *ngIf="signUpFormGroup.value.companyname" matSuffix mat-icon-button
+                aria-label="Clear" (click)="resetSignUpCompanyname()">
+                <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+          <mat-form-field *ngIf="signUpFormGroup.get('customertype').value==='2'" appearance="standard">
+            <mat-label>Web Address</mat-label>
+            <input matInput placeholder="https://www.companyaddress.com" type="text" name="website"
+                formControlName="webaddress" required>
+            <mat-error class="error-message" *ngIf="signUpFormGroup.get('webaddress').hasError('required')
+                && (signUpFormGroup.get('webaddress').dirty || signUpFormGroup.get('webaddress').touched)">
+                Company's web address is <strong>required</strong>.
+            </mat-error>
+            <button mat-button *ngIf="signUpFormGroup.value.webaddress" matSuffix mat-icon-button
+                aria-label="Clear" (click)="resetSignUpWebaddress()">
+                <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <!--  -->
+
+          <mat-form-field appearance="standard">
+            <mat-label>Street</mat-label>
+            <input matInput placeholder="121 Main Street" type="text" name="street"
+                formControlName="street" required>
+            <mat-error class="error-message" *ngIf="signUpFormGroup.get('street').hasError('required')
+                && (signUpFormGroup.get('street').dirty || signUpFormGroup.get('street').touched)">
+                Street is <strong>required</strong>.
+            </mat-error>
+            <button mat-button *ngIf="signUpFormGroup.value.street" matSuffix mat-icon-button
+                aria-label="Clear" (click)="resetSignUpStreet()">
+                <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+          <div class="city-container">
+            <mat-form-field appearance="standard">
+              <mat-label>City</mat-label>
+              <input matInput placeholder="Irvine" type="text" name="city"
+                  formControlName="city" required>
+              <mat-error class="error-message" *ngIf="signUpFormGroup.get('city').hasError('required')
+                  && (signUpFormGroup.get('city').dirty || signUpFormGroup.get('city').touched)">
+                  City is <strong>required</strong>.
+              </mat-error>
+              <button mat-button *ngIf="signUpFormGroup.value.city" matSuffix mat-icon-button
+                  aria-label="Clear" (click)="resetSignUpCity()">
+                  <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+            <mat-form-field appearance="standard" class="state-item">
+              <mat-label>State</mat-label>
+              <input matInput placeholder="CA" type="text" name="state"
+                  formControlName="state" required>
+              <mat-error class="error-message" *ngIf="signUpFormGroup.get('state').hasError('required')
+                  && (signUpFormGroup.get('state').dirty || signUpFormGroup.get('state').touched)">
+                  State is <strong>required</strong>.
+              </mat-error>
+              <button mat-button *ngIf="signUpFormGroup.value.state" matSuffix mat-icon-button
+                  aria-label="Clear" (click)="resetSignUpState()">
+                  <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+            <mat-form-field appearance="standard">
+              <mat-label>Zip Code</mat-label>
+              <input matInput placeholder="92697" type="text" name="zip"
+                  formControlName="zip" required>
+              <mat-error class="error-message" *ngIf="signUpFormGroup.get('zip').hasError('required')
+                  && (signUpFormGroup.get('zip').dirty || signUpFormGroup.get('zip').touched)">
+                  Zip code is <strong>required</strong>.
+              </mat-error>
+              <button mat-button *ngIf="signUpFormGroup.value.zip" matSuffix mat-icon-button
+                  aria-label="Clear" (click)="resetSignUpZip()">
+                  <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+          <mat-form-field appearance="standard">
+            <mat-label>Contact Number</mat-label>
+            <input matInput placeholder="949-123-1234" type="tel" name="phone"
+                formControlName="phone" required>
+            <mat-error class="error-message" *ngIf="signUpFormGroup.get('phone').hasError('required')
+                && (signUpFormGroup.get('phone').dirty || signUpFormGroup.get('phone').touched)">
+                Phone number is <strong>required</strong>.
+            </mat-error>
+            <mat-error class="error-message" *ngIf="signUpFormGroup.get('phone').hasError('pattern')
+                && (signUpFormGroup.get('phone').dirty || signUpFormGroup.get('phone').touched)">
+                Phone number must be in 123-123-1234 format
+            </mat-error>
+            <button mat-button *ngIf="signUpFormGroup.value.phone" matSuffix mat-icon-button
+                aria-label="Clear" (click)="resetSignUpPhone()">
+                <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <!-- this is for expert -->
+
+          <mat-form-field *ngIf="signUpFormGroup.get('customertype').value==='1'" appearance="standard">
+            <mat-label>Experience</mat-label>
+            <input matInput type="text" name="experience"
+                formControlName="experience" required>
+            <mat-error class="error-message" *ngIf="signUpFormGroup.get('experience').hasError('required')
+                && (signUpFormGroup.get('experience').dirty || signUpFormGroup.get('experience').touched)">
+                Experience is <strong>required</strong>.
+            </mat-error>
+            <button mat-button *ngIf="signUpFormGroup.value.experience" matSuffix mat-icon-button
+                aria-label="Clear" (click)="resetSignUpExperience()">
+                <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+          <mat-form-field *ngIf="signUpFormGroup.get('customertype').value==='1'" appearance="standard">
+            <mat-label>Certification</mat-label>
+            <input matInput type="text" name="certification"
+                formControlName="certification" required>
+            <mat-error class="error-message" *ngIf="signUpFormGroup.get('certification').hasError('required')
+                && (signUpFormGroup.get('certification').dirty || signUpFormGroup.get('certification').touched)">
+                Certification is <strong>required</strong>.
+            </mat-error>
+            <button mat-button *ngIf="signUpFormGroup.value.certification" matSuffix mat-icon-button
+                aria-label="Clear" (click)="resetSignUpCertification()">
+                <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <!--  -->
+
+          <!-- this is for admin -->
+          <mat-form-field *ngIf="signUpFormGroup.get('customertype').value==='3'" appearance="standard">
+            <mat-label>Administrator Code</mat-label>
+            <input matInput type="text" name="admincode"
+                formControlName="admincode" required>
+            <mat-error class="error-message" *ngIf="signUpFormGroup.get('admincode').hasError('required')
+                && (signUpFormGroup.get('admincode').dirty || signUpFormGroup.get('admincode').touched)">
+                Administrator's code is <strong>required</strong>.
+            </mat-error>
+            <button mat-button *ngIf="signUpFormGroup.value.admincode" matSuffix mat-icon-button
+                aria-label="Clear" (click)="resetSignUpAdmincode()">
+                <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+          <button class="register-button" mat-stroked-button type="submit" (click)="registerNewUser()">
+            <span *ngIf="!userSigninService.getRegisteredClicked()">Register</span>
+            <span *ngIf="userSigninService.getRegisteredClicked()"><i class="fa fa-spinner fa-pulse fa-fw"></i></span>
+          </button>
+
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+

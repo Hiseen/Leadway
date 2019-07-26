@@ -18,7 +18,7 @@ export class InfoFormComponent implements OnInit {
   public registerClicked = false;
 
   constructor(private router: Router, private formBuilder: FormBuilder,
-              private userSigninService: UserSigninService,
+              public userSigninService: UserSigninService,
               private snackBar: MatSnackBar) {
 
     this.signUpFormGroup = formBuilder.group({

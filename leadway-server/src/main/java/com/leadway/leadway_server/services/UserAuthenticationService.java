@@ -1,10 +1,15 @@
 package com.leadway.leadway_server.services;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,12 +34,16 @@ public class UserAuthenticationService {
 		String decryptedToken;
 		try {
 			decryptedToken = encryptionService.AESDecrypt(frontEndToken);
-		} catch (BadPaddingException | IllegalBlockSizeException | DecoderException e) {
-			// TODO Auto-generated catch block
+		} catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException
+				| NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException
+				| DecoderException e) {
 			return false;
 		}
+		
 		String[] splitedToken = decryptedToken.split(":");
 		
+//		System.out.println("Splited token 0 = " + splitedToken[0]);
+//		System.out.println("Splited token 1 = " + splitedToken[1]);
 		
 		Long id = Long.parseLong(splitedToken[0]);
 		Long token = Long.parseLong(splitedToken[1]);

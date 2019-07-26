@@ -24,11 +24,22 @@ public class InterceptionService implements HandlerInterceptor {
     @Autowired
     EncryptionService encryptionService;
 
-    private final String[] passPaths={"/error", "/user-auth" , "/login", "/register", "/verify"};
+    private final String[] passPaths={"/error", "/api/user-auth" , "/api/login", "/api/register", "/api/verify"};
 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
+    	    	
+    	String requestPath = request.getRequestURI();
+    	System.out.println("Path = " + requestPath);
+    	String [] paths = requestPath.split("/");
+    	String firstPath = paths[1];
+    	System.out.println("First path = " + firstPath);
+    	
+    	if (!firstPath.equals("api")) {
+    		return true;
+    	}
+    	
         if(Arrays.stream(passPaths).anyMatch(str->str.equals(request.getRequestURI()))) {
             //if it's one of the passPaths, no need to check token or session.
             return true;

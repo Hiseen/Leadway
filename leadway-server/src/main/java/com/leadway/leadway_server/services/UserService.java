@@ -1,5 +1,9 @@
 package com.leadway.leadway_server.services;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
@@ -60,15 +64,14 @@ public class UserService {
 	private EncryptionService encryptionService;
 	
 	// temporary variable to prevent email authentication every single time
-	private boolean isDeveloping = true;
+	private boolean isDeveloping = false;
 	
 	// temporary administrator password
 	private String adminPassword = "123leadway123";
 
 	private UserService() {}
 	
-	public ObjectNode createNewUserEntities(ObjectNode signUpForm) throws InvalidKeySpecException, MessagingException, 
-			BadPaddingException, IllegalBlockSizeException {
+	public ObjectNode createNewUserEntities(ObjectNode signUpForm) {
 		ObjectNode result = new ObjectMapper().createObjectNode();
 
 		LeadwayUser newUser = new LeadwayUser();
@@ -100,9 +103,17 @@ public class UserService {
 
 
 		String userPassword = signUpForm.get("password").asText();
-		String encryptedPassword = encryptionService.PBKDF2Encrypt(userPassword);
+		String encryptedPassword;
+		try {
+			encryptedPassword = encryptionService.PBKDF2Encrypt(userPassword);
+			newUser.setPassword(encryptedPassword);
+
+		} catch (InvalidKeySpecException e) {
+			result.put("code", 1);
+			result.put("error", "PBKDF2 encryption invalid key error");
+			return result;	
+		}
 		newUser.setEmail(userEmail);
-		newUser.setPassword(encryptedPassword);
 		newUser.setType(userType);
 		
 		newUser.setVerified(false);
@@ -117,7 +128,15 @@ public class UserService {
 		this.generateUserType(newUser.getId(), userType, signUpForm);
 
 		if (!isDeveloping) {
-			mailService.sendVerificationMailTo(userEmail, encryptionService.AESEncrypt(newUser.getId().toString()));			
+			try {
+				mailService.sendVerificationMailTo(userEmail, encryptionService.AESEncrypt(newUser.getId().toString()));
+			} catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException
+					| UnsupportedEncodingException | InvalidAlgorithmParameterException | NoSuchAlgorithmException
+					| NoSuchPaddingException | MessagingException e) {
+				result.put("code", 1);
+				result.put("error", "mailservice email verification error");
+				return result;	
+			}			
 		}
 		
 		result.put("code", 0);
@@ -162,7 +181,7 @@ public class UserService {
 	}
 	
 	public ObjectNode loginUser(ObjectNode signInForm, HttpServletResponse httpResponse) throws InvalidKeySpecException, 
-			BadPaddingException, IllegalBlockSizeException {
+			BadPaddingException, IllegalBlockSizeException, InvalidKeyException, UnsupportedEncodingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException {
 		
 		ObjectNode result = new ObjectMapper().createObjectNode();
 		String userEmail = signInForm.get("email").asText();
@@ -222,9 +241,11 @@ public class UserService {
 		}
 	}
 
-	public ObjectNode verifyUser(String code) throws BadPaddingException, IllegalBlockSizeException, DecoderException {
+	public ObjectNode verifyUser(String code) throws BadPaddingException, IllegalBlockSizeException, DecoderException, UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		ObjectNode result = new ObjectMapper().createObjectNode();
 		String decrypted = encryptionService.AESDecrypt(code);
+		System.out.println("IN VERIFY, encrypted = " + code);
+		System.out.println("IN VERIFY, decrypted = " + decrypted);
 		Long id;
 		try {
 			id=Long.parseLong(decrypted);

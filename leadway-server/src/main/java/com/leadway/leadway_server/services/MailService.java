@@ -36,7 +36,7 @@ public class MailService {
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
         message.setSubject("Leadway Email Verification");
         
-        String verificationURL = hostname + "/verify?code=" + verificationCode;
+        String verificationURL = hostname + "/api/verify?code=" + verificationCode;
         String verificationContent = "Welcome to Leadway!<br><br>" +
                 "Thank you for signing up. Please verify your e-mail address by visiting the link below in your browser of choice:<br>" +
                 verificationURL;

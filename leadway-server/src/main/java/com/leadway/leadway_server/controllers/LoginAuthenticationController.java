@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,7 +22,7 @@ public class LoginAuthenticationController {
 	@Autowired
 	private UserAuthenticationService authService;
 	
-	@RequestMapping(method=RequestMethod.POST, value="/user-auth")
+	@RequestMapping(method=RequestMethod.POST, value="/api/user-auth")
 	public boolean verifySessionToken(@RequestBody String request, HttpServletResponse httpResponse) throws IOException   {
 		ObjectNode requestJson = (ObjectNode) new ObjectMapper().readTree(request);
 		JsonNode userToken = requestJson.get("token");

@@ -1,6 +1,7 @@
 package com.leadway.leadway_server.controllers;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -28,7 +29,7 @@ public class UserController {
 	@Autowired
 	private UserService service;
 	
-	@RequestMapping(method=RequestMethod.POST, value="/register")
+	@RequestMapping(method=RequestMethod.POST, value="/api/register")
 	public ObjectNode register(@RequestBody String request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) 
 			throws IOException, InvalidKeySpecException, MessagingException, NoSuchPaddingException, InvalidKeyException, 
 			NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
@@ -37,16 +38,17 @@ public class UserController {
 		return service.createNewUserEntities(signUpForm);
 	}
 	
-	@RequestMapping(method=RequestMethod.POST, value="/login")
+	@RequestMapping(method=RequestMethod.POST, value="/api/login")
 	public ObjectNode signIn(@RequestBody String request,HttpServletRequest httpRequest, HttpServletResponse httpResponse) 
-			throws IOException, InvalidKeySpecException, BadPaddingException, IllegalBlockSizeException {
+			throws IOException, InvalidKeySpecException, BadPaddingException, IllegalBlockSizeException, 
+			InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException {
 		
 		ObjectNode signInForm = (ObjectNode) new ObjectMapper().readTree(request);
 		ObjectNode result = service.loginUser(signInForm, httpResponse);
 		return result;
 	}
 	
-	@RequestMapping(method=RequestMethod.POST, value="logout")
+	@RequestMapping(method=RequestMethod.POST, value="/api/logout")
 	public ObjectNode signOut(@RequestBody String request,HttpServletRequest httpRequest, HttpServletResponse httpResponse) 
 			throws IOException, BadPaddingException, IllegalBlockSizeException, DecoderException {
 		ObjectNode logoutInfo = (ObjectNode) new ObjectMapper().readTree(request);
@@ -54,9 +56,19 @@ public class UserController {
 		return result;
 	}
 
-	@RequestMapping(method=RequestMethod.GET, value="/verify")
+	@RequestMapping(method=RequestMethod.GET, value="/api/verify")
 	public ObjectNode verifyUser(@RequestParam("code") String code) throws NoSuchPaddingException, BadPaddingException, 
-		InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, DecoderException, InvalidAlgorithmParameterException {
+			InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, DecoderException, InvalidAlgorithmParameterException, 
+			UnsupportedEncodingException {
+		System.out.println("in verify get");
+		return service.verifyUser(code);
+	}
+	
+	@RequestMapping(method=RequestMethod.POST, value="/api/verify")
+	public ObjectNode verifyUser2(@RequestParam("code") String code) throws NoSuchPaddingException, BadPaddingException, 
+			InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, DecoderException, InvalidAlgorithmParameterException, 
+			UnsupportedEncodingException {
+		System.out.println("in verify post");
 		return service.verifyUser(code);
 	}
 }

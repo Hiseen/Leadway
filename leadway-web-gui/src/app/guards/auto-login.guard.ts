@@ -28,6 +28,8 @@ export class AutoLoginGuard implements CanActivate {
     // token ID is null, then the user must be in sign-in / sign-up page
     if (!currentTokenID) { return true; }
 
+    console.log('Auto login, token = ' + currentTokenID);
+
     const verification = this.userAuthService.getTokenVerificationStream()
       .pipe(
         map(verified => {

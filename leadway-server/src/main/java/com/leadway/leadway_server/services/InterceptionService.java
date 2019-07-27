@@ -32,6 +32,9 @@ public class InterceptionService implements HandlerInterceptor {
     	    	
     	String requestPath = request.getRequestURI();
     	System.out.println("Path = " + requestPath);
+    	if (requestPath.equals("/")) {
+    		return true;
+    	}
     	String [] paths = requestPath.split("/");
     	String firstPath = paths[1];
     	System.out.println("First path = " + firstPath);

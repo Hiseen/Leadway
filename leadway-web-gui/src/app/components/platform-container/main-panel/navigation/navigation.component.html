@@ -1,7 +1,7 @@
 <nav class="leadway-navigation-body navbar sticky-top navbar-expand-lg navbar-light bg-light">
   <!-- navigation header -->
   <a [ngClass]="{'hidden-container': showHiddenSearchBar}"
-    class="navbar-brand navigation-logo" href="/">Leadway  </a>
+    class="navbar-brand navigation-logo" (click)="navigateToHome()">Leadway  </a>
 
   <!-- navigation search bar -->
   <form [ngClass]="{'hidden-container': !showHiddenSearchBar}"
@@ -37,15 +37,21 @@
 
   <!-- navigation utilities on the right -->
   <div [ngClass]="{'hidden-container': showHiddenSearchBar}" class="navigation-utilities">
-    <div class="search-utility d-inline d-md-none">
-      <button class="search-utility-button btn btn-outline-secondary" type="submit"
-        (click)="miniSearchClick()">
+    <div class="utility-div d-inline d-md-none">
+      <button class="utility-button btn btn-outline-secondary" type="submit"
+        (click)="miniSearchClick()" title="open search bar">
         <i class="fa fa-search" aria-hidden="true"></i>
       </button>
     </div>
+    <div *ngIf="userType===3" class="utility-div d-inline">
+      <button class="utility-button btn btn-outline-info" type="submit"
+        (click)="adminUploadClick()" title="upload new task">
+        <i class="fa fa-upload" aria-hidden="true"></i>
+      </button>
+    </div>
     <div class="user-utility dropdown d-inline">
-      <button class="user-button btn btn btn-success" type="submit" id="userDropdownMenu"
-        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{userInitial}}</button>
+      <button class="user-button btn btn btn-success userInitialButton" type="submit" id="userDropdownMenu"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="you">{{userInitial}}</button>
 
       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdownMenu">
         <div class="dropdown-account-header">

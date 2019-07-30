@@ -93,3 +93,20 @@
   font-size: 18px;
   font-weight: bold;
 }
+
+@media screen and (max-width: 768px) {
+  .category-item {
+    padding: 15px;
+    width: 150px;
+    border-radius: 5px;
+    margin-bottom: 25px;
+  }
+
+  .leadway-landing {
+    width: 90%;
+  }
+
+  .category-text {
+    font-size: 14px;
+  }
+}

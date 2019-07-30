@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserMetadataService } from 'src/app/services/user-info/user-metadata.service';
 
 @Component({
   selector: 'leadway-landing-page',

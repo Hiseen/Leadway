@@ -11,9 +11,14 @@ import { UserMetadataService } from 'src/app/services/user-info/user-metadata.se
 })
 export class NavigationComponent implements OnInit {
 
-  public userInitial = this.userMetadataService.getUserInfo().name.charAt(0).toUpperCase();
-  public userName = this.userMetadataService.getUserInfo().name;
-  public userEmail = this.userMetadataService.getUserInfo().email;
+  // gather user information stored when login
+  public userInformation = this.userMetadataService.getUserInfo();
+
+  // fetch basic information from the user info to display on the navigation
+  public userInitial = this.userInformation.name.charAt(0).toUpperCase();
+  public userName = this.userInformation.name;
+  public userEmail = this.userInformation.email;
+  public userType = this.userInformation.type;
 
   public showHiddenSearchBar = false;
   public searchFormGroup: FormGroup;
@@ -62,6 +67,25 @@ export class NavigationComponent implements OnInit {
       return;
     }
     this.router.navigate(['search'], {queryParams: this.searchFormGroup.value});
+  }
+
+  /**
+   * This navigates the admin user to the uploadtask form page
+   */
+  public adminUploadClick(): void {
+    if (this.userType !== 3) {
+      return;
+    }
+    // console.log('Navigate to admin upload form page');
+    this.router.navigate(['uploadtask']);
+  }
+
+  /**
+   * This method will navigate back to the home page when the
+   *  user clicks the website icon / title on the top-left.
+   */
+  public navigateToHome(): void {
+    this.router.navigate(['']);
   }
 
 }

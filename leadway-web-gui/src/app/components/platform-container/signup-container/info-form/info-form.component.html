@@ -170,7 +170,7 @@
           </div>
           <mat-form-field appearance="standard">
             <mat-label>Contact Number</mat-label>
-            <input matInput placeholder="949-123-1234" type="tel" name="phone"
+            <input matInput placeholder="9491231234" type="tel" name="phone"
                 formControlName="phone" required>
             <mat-error class="error-message" *ngIf="signUpFormGroup.get('phone').hasError('required')
                 && (signUpFormGroup.get('phone').dirty || signUpFormGroup.get('phone').touched)">
@@ -178,7 +178,7 @@
             </mat-error>
             <mat-error class="error-message" *ngIf="signUpFormGroup.get('phone').hasError('pattern')
                 && (signUpFormGroup.get('phone').dirty || signUpFormGroup.get('phone').touched)">
-                Phone number must be in 123-123-1234 format
+                Phone number must be in 9491231234 format
             </mat-error>
             <button mat-button *ngIf="signUpFormGroup.value.phone" matSuffix mat-icon-button
                 aria-label="Clear" (click)="resetSignUpPhone()">

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { UserSigninService } from 'src/app/services/login/user-signin.service';
 import { Router } from '@angular/router';
+import { UserMetadataService } from 'src/app/services/user-info/user-metadata.service';
 
 @Component({
   selector: 'leadway-navigation',
@@ -10,13 +11,15 @@ import { Router } from '@angular/router';
 })
 export class NavigationComponent implements OnInit {
 
-  public userInitial = 'W';
-  public showHiddenSearchBar = false;
+  public userInitial = this.userMetadataService.getUserInfo().name.charAt(0).toUpperCase();
+  public userName = this.userMetadataService.getUserInfo().name;
+  public userEmail = this.userMetadataService.getUserInfo().email;
 
+  public showHiddenSearchBar = false;
   public searchFormGroup: FormGroup;
 
   constructor(private formBuilder: FormBuilder, private userSigninService: UserSigninService,
-              private router: Router) {
+              private router: Router, public userMetadataService: UserMetadataService) {
     this.searchFormGroup = formBuilder.group({
       query: new FormControl('', Validators.compose([
 

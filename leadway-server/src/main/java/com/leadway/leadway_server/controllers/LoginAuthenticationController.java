@@ -23,7 +23,7 @@ public class LoginAuthenticationController {
 	private UserAuthenticationService authService;
 	
 	@RequestMapping(method=RequestMethod.POST, value="/api/user-auth")
-	public boolean verifySessionToken(@RequestBody String request, HttpServletResponse httpResponse) throws IOException   {
+	public ObjectNode verifySessionToken(@RequestBody String request, HttpServletResponse httpResponse) throws IOException   {
 		ObjectNode requestJson = (ObjectNode) new ObjectMapper().readTree(request);
 		JsonNode userToken = requestJson.get("token");
 		return authService.verifyToken(userToken.asText(), httpResponse);

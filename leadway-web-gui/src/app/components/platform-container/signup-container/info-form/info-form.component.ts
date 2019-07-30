@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { UserSigninService } from 'src/app/services/login/user-signin.service';
 import { MatSnackBar } from '@angular/material';
 
-export const MOBILE_PATTERN = /[0-9]{3}-[0-9]{3}-[0-9]{4}/;
+export const MOBILE_PATTERN = /[0-9]{10}/;
 
 @Component({
   selector: 'leadway-info-form',

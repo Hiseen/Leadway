@@ -35,11 +35,9 @@ public class InterceptionService implements HandlerInterceptor {
     	if (requestPath.equals("/")) {
     		return true;
     	}
-    	String [] paths = requestPath.split("/");
-    	String firstPath = paths[1];
-    	System.out.println("First path = " + firstPath);
-    	
-    	if (!firstPath.equals("api")) {
+
+    	// anything for frontend will be handled by angular 
+    	if (!requestPath.startsWith("/api")) {
     		return true;
     	}
     	

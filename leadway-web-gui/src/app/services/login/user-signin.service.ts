@@ -3,17 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
+import { RegistrationResponse, LoginResponse, LoginInfo, LogoutResponse } from 'src/app/types/user-registration.interface';
+import { UserMetadataService } from '../user-info/user-metadata.service';
 
 export const USER_REGISTRATION_ENDPOINT = 'register';
 export const USER_SIGNIN_ENDPOINT = 'login';
 export const USER_SIGNOUT_ENDPOINT = 'logout';
-
-export interface LoginRegisterResponse {
-  code: number;
-  error?: string;
-  token?: string;
-  userID?: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -24,12 +19,12 @@ export class UserSigninService {
   private signinClicked = false;
 
   constructor(private http: HttpClient, private router: Router,
-              private snackBar: MatSnackBar) { }
+              private snackBar: MatSnackBar, private userMetaDataService: UserMetadataService) { }
 
   public registerUser(registrationForm: object): void {
     this.registeredClicked = true;
     const requestUrl = `${environment.apiUrl}/${USER_REGISTRATION_ENDPOINT}`;
-    this.http.post<LoginRegisterResponse>(
+    this.http.post<RegistrationResponse>(
       requestUrl,
       JSON.stringify(registrationForm),
       {
@@ -75,7 +70,7 @@ export class UserSigninService {
     localStorage.removeItem('userID');
 
     const requestUrl = `${environment.apiUrl}/${USER_SIGNIN_ENDPOINT}`;
-    this.http.post<LoginRegisterResponse>(
+    this.http.post<LoginResponse>(
       requestUrl,
       JSON.stringify(signInForm),
       {
@@ -89,7 +84,9 @@ export class UserSigninService {
         if (res.code === 0) {
           // saves login token in local storage
           localStorage.setItem('tokenID', res.token);
-          localStorage.setItem('userID', res.userID);
+
+          // store the current user information in the service
+          this.userMetaDataService.setUserInfo(res.user);
           this.router.navigate(['main']);
 
         } else {
@@ -139,7 +136,7 @@ export class UserSigninService {
     }
 
     const requestUrl = `${environment.apiUrl}/${USER_SIGNOUT_ENDPOINT}`;
-    this.http.post<LoginRegisterResponse>(
+    this.http.post<LogoutResponse>(
       requestUrl,
       JSON.stringify({id: userID}),
       {

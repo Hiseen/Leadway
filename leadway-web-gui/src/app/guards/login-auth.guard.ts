@@ -3,6 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Rout
 import { Observable } from 'rxjs';
 import { UserAuthService } from '../services/user-auth/user-auth.service';
 import { map, tap, take } from 'rxjs/operators';
+import { UserMetadataService } from '../services/user-info/user-metadata.service';
 
 /**
  * This is mainly used for components other than sign-in / sign-up
@@ -14,7 +15,8 @@ import { map, tap, take } from 'rxjs/operators';
 })
 export class LoginAuthGuard implements CanActivate {
 
-  constructor(private userAuthService: UserAuthService, private router: Router) {}
+  constructor(private userAuthService: UserAuthService, private router: Router,
+              private userMetadataService: UserMetadataService) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -35,11 +37,15 @@ export class LoginAuthGuard implements CanActivate {
 
     const verification = this.userAuthService.getTokenVerificationStream()
       .pipe(
-        map(verified => {
-          if (!verified) {
+        map(verifiedJson => {
+          if (!verifiedJson.verified) {
+            // tokenID is no longer valid, remove it and navigate back to signin panel
+            localStorage.removeItem('tokenID');
             this.router.navigate(['signin']);
             return false;
           }
+          // tokenID is valid, get the userInfo before going to the main panel.
+          this.userMetadataService.setUserInfo(verifiedJson.userInfo);
           return true;
         })
       );

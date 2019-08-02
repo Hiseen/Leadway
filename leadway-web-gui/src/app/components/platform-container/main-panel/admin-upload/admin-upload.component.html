@@ -1,1 +1,99 @@
-<p>admin-upload works!</p>
+<div class="main-container">
+    <div class="task-editor"> 
+        <h2 class="ui-header">项目编辑</h2> 
+        <form [formGroup]="taskFormGroup"> 
+            <div class="field-group">
+                <mat-form-field class="field-title" appearance="outline">
+                    <mat-label>名称</mat-label>
+                    <input matInput placeholder="名称" type="text" name="taskName"
+                        formControlName="taskName" required>
+                    </mat-form-field>
+                <mat-form-field class="field-selection" appearance="outline">
+                    <mat-label>类型</mat-label>
+                    <mat-select formControlName="taskType" required>
+                        <mat-option value="0">家政服务</mat-option>
+                        <mat-option value="1">残障护理</mat-option>
+                        <mat-option value="2">货物运输</mat-option>
+                        <mat-option value="3">商业项目</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            
+            <mat-form-field class="field-text" appearance="outline">
+                    <mat-label>描述</mat-label>
+                    <textarea matInput
+                        formControlName="taskDescription"
+                        cdkTextareaAutosize
+                        #autosize="cdkTextareaAutosize"
+                        cdkAutosizeMinRows="8"
+                        cdkAutosizeMaxRows="8"></textarea>
+            </mat-form-field>
+            <div class="field-group">
+            <mat-form-field appearance="outline">
+                    <mat-label>开始日期</mat-label>
+                    <input matInput required formControlName="startDate" [matDatepicker]="startDate" placeholder="开始日期">
+                    <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+                    <mat-datepicker #startDate></mat-datepicker>
+                    <mat-error *ngIf="taskFormGroup.get('startDate').invaild">?</mat-error>
+                  </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>截止日期</mat-label>
+                <input matInput required formControlName="endDate" [matDatepicker]="endDate" placeholder="截止日期">
+                <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+                <mat-datepicker #endDate></mat-datepicker>
+                <mat-error *ngIf="taskFormGroup.get('endDate').invaild"></mat-error>
+                </mat-form-field>
+            </div>
+            <div class="field-group">
+                <mat-form-field appearance="outline">
+                        <mat-label>资金</mat-label>
+                        <input matInput placeholder="金额（元）" type="text" name="taskFunding" formControlName="taskFunding" required>
+                        <mat-error *ngIf="!taskFormGroup.get('taskFunding').hasError('pattern') && !taskFormGroup.get('taskFunding').hasError('required')">
+                        </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                        <mat-label>违约金</mat-label>
+                        <input matInput placeholder="金额（元）" type="text" name="taskPenalty" formControlName="taskPenalty" required>
+                        <mat-error *ngIf="!taskFormGroup.get('taskPenalty').hasError('pattern') && !taskFormGroup.get('taskPenalty').hasError('required')">
+                        </mat-error>
+                </mat-form-field>
+            </div>
+
+
+            <button class="submit-button" mat-stroked-button type="submit" (click)="registerNewUser()">
+                <span>提交</span>
+            </button>
+    </form> 
+    </div> 
+    <div class="task-viewer">
+        <div class='task-viewer-top'>
+            <h2 class="ui-header">项目总览</h2>
+            <button class="delete-button" mat-stroked-button type="submit" (click)="registerNewUser()">
+                    <span>删除</span>
+                </button>
+        </div> 
+        
+        <mat-selection-list #selectionList>
+            <h3 mat-subheader>家政服务</h3>
+            <mat-list-option *ngFor="let item of items"> 
+                <h4 mat-line>{{item}}</h4>
+            </mat-list-option>
+            <mat-divider></mat-divider>
+            <h3 mat-subheader>残障护理</h3>
+            <mat-list-option *ngFor="let item of items">
+                <h4 mat-line>{{item}}</h4>
+            </mat-list-option>
+            <mat-divider></mat-divider>
+            <h3 mat-subheader>货物运输</h3>
+            <mat-list-option *ngFor="let item of items">
+                <h4 mat-line>{{item}}</h4>
+            </mat-list-option>
+            <mat-divider></mat-divider>
+            <h3 mat-subheader>商业项目</h3>
+            <mat-list-option *ngFor="let item of items">
+                <h4 mat-line>{{item}}</h4>
+            </mat-list-option>
+        </mat-selection-list>
+    </div> 
+</div>
+

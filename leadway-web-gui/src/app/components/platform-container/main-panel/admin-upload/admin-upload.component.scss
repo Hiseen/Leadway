@@ -1,0 +1,68 @@
+.main-container{   
+    margin: 1%;
+    display: -webkit-flex; /* Safari */
+    -webkit-flex-direction: row; /* Safari 6.1+ */
+    display: flex;
+    flex-direction: row;
+}
+.task-editor{
+    width:50%;
+    height: 100%;
+}
+
+form{
+    display: -webkit-flex; /* Safari */
+    -webkit-flex-direction: column; /* Safari 6.1+ */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.task-viewer{
+    width:50%;
+    height:100%;
+}
+
+.submit-button{
+    width: 20%
+}
+
+
+.field-selection{
+    width:30%
+}
+
+.field-title{
+    width:60%
+}
+
+
+.field-text{
+    width:90%
+}
+
+.field-group{
+    display: -webkit-flex; /* Safari */
+    -webkit-flex-direction: row; /* Safari 6.1+ */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
+}
+
+mat-selection-list {
+     overflow: auto; 
+     height: 80vh;
+}
+
+.task-viewer-top{
+    display: -webkit-flex; /* Safari */
+    -webkit-flex-direction: row; /* Safari 6.1+ */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.delete-button{
+    width: 10%
+}

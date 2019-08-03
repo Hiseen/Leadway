@@ -43,8 +43,18 @@ form{
 
 .submit-button{
   width: 100%;
+  color: white;
+  font-weight: bold;
+  background-color: #248f24;
 }
 
+.submit-button:hover {
+  background-color: #33cc33;
+}
+
+.ui-header {
+  font-weight: bold;
+}
 
 .field-selection{
   width:30%

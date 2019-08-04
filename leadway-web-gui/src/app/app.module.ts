@@ -21,6 +21,8 @@ import { BusinessDetailComponent } from './components/platform-container/main-pa
 import { LandingPageComponent } from './components/platform-container/main-panel/landing-page/landing-page.component';
 import { VerifyAccountComponent } from './components/platform-container/signup-container/verify-account/verify-account.component';
 import { AdminUploadComponent } from './components/platform-container/main-panel/admin-upload/admin-upload.component';
+import { TaskDetailComponent } from './components/platform-container/main-panel/task-detail/task-detail.component';
+import { AccountInfoComponent } from './components/platform-container/main-panel/account-info/account-info.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,9 @@ import { AdminUploadComponent } from './components/platform-container/main-panel
     BusinessDetailComponent,
     LandingPageComponent,
     VerifyAccountComponent,
-    AdminUploadComponent
+    AdminUploadComponent,
+    TaskDetailComponent,
+    AccountInfoComponent
   ],
   imports: [
     BrowserModule,

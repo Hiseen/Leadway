@@ -12,6 +12,8 @@ import { AutoLoginGuard } from './guards/auto-login.guard';
 import { InfoFormComponent } from './components/platform-container/signup-container/info-form/info-form.component';
 import { VerifyAccountComponent } from './components/platform-container/signup-container/verify-account/verify-account.component';
 import { AdminUploadComponent } from './components/platform-container/main-panel/admin-upload/admin-upload.component';
+import { AccountInfoComponent } from './components/platform-container/main-panel/account-info/account-info.component';
+import { TaskDetailComponent } from './components/platform-container/main-panel/task-detail/task-detail.component';
 
 const routes: Routes = [
   { path: 'signin', component: SigninContainerComponent, canActivate: [AutoLoginGuard] },
@@ -22,7 +24,9 @@ const routes: Routes = [
       { path: '', component: LandingPageComponent },
       { path: 'search', component: BusinessSearchComponent },
       { path: 'business/:name', component: BusinessDetailComponent },
-      { path: 'uploadtask', component: AdminUploadComponent }
+      { path: 'uploadtask', component: AdminUploadComponent },
+      { path: 'account', component: AccountInfoComponent },
+      { path: 'task/:id', component: TaskDetailComponent }
     ],
     canActivate: [LoginAuthGuard]
   },

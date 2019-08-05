@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { LeadwayTask, ListTasksResponse } from 'src/app/types/leadway-task.interface';
+import { Subject, Observable } from 'rxjs';
 
 export const ADMIN_ADD_TASK_ENDPOINT = 'admin-create';
 export const ADMIN_LIST_TASKS_ENDPOINT = 'admin-list';
@@ -14,6 +15,12 @@ export const ADMIN_DELETE_TASK_ENDPOINT = 'admin-delete';
 export class AdminTaskService {
 
   constructor(private http: HttpClient) { }
+
+  private uploadedTaskStream = new Subject<LeadwayTask[]> ();
+
+  public getUploadedTaskStream(): Observable<LeadwayTask[]> {
+    return this.uploadedTaskStream.asObservable();
+  }
 
   public createTask(taskForm: object): void {
     const requestURL = `${environment.apiUrl}/${ADMIN_ADD_TASK_ENDPOINT}`;
@@ -33,9 +40,7 @@ export class AdminTaskService {
   public listTasks(): void {
     const requestURL = `${environment.apiUrl}/${ADMIN_LIST_TASKS_ENDPOINT}`;
     this.http.get<ListTasksResponse>(requestURL).subscribe(res => {
-      console.log(res);
-      console.log(res.tasks[0].startDate);
-
+      this.uploadedTaskStream.next(res.tasks);
     });
   }
 

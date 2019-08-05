@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { LeadwayTask, ListTasksResponse } from 'src/app/types/leadway-task.interface';
 import { Subject, Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material';
+import { Router } from '@angular/router';
 
 export const ADMIN_ADD_TASK_ENDPOINT = 'admin-create';
 export const ADMIN_LIST_TASKS_ENDPOINT = 'admin-list';
@@ -14,7 +16,7 @@ export const ADMIN_DELETE_TASK_ENDPOINT = 'admin-delete';
 })
 export class AdminTaskService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private snackBar: MatSnackBar, private router: Router) { }
 
   private uploadedTaskStream = new Subject<LeadwayTask[]> ();
 
@@ -33,7 +35,10 @@ export class AdminTaskService {
         }
       }
     ).subscribe(res => {
-      console.log(res);
+      this.snackBar.open('Task creation successful', 'ok', {
+        duration: 10000
+      });
+      this.router.navigate(['']);
     });
   }
 

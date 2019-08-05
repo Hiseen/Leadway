@@ -22,7 +22,8 @@ import { LandingPageComponent } from './components/platform-container/main-panel
 import { VerifyAccountComponent } from './components/platform-container/signup-container/verify-account/verify-account.component';
 import { AdminUploadComponent } from './components/platform-container/main-panel/admin-upload/admin-upload.component';
 import { TaskDetailComponent } from './components/platform-container/main-panel/task-detail/task-detail.component';
-import { AccountInfoComponent } from './components/platform-container/main-panel/account-info/account-info.component';
+import { AccountInfoComponent,
+  LeadwayTaskDeleteModalComponent } from './components/platform-container/main-panel/account-info/account-info.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { AccountInfoComponent } from './components/platform-container/main-panel
     VerifyAccountComponent,
     AdminUploadComponent,
     TaskDetailComponent,
-    AccountInfoComponent
+    AccountInfoComponent,
+    LeadwayTaskDeleteModalComponent
   ],
   imports: [
     BrowserModule,
@@ -54,6 +56,9 @@ import { AccountInfoComponent } from './components/platform-container/main-panel
     HttpClientModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    LeadwayTaskDeleteModalComponent
+  ]
 })
 export class AppModule { }

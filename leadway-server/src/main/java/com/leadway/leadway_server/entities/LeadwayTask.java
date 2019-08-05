@@ -2,6 +2,7 @@ package com.leadway.leadway_server.entities;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,26 +17,41 @@ public class LeadwayTask {
 	
 	private String taskName;
 	private int taskType;
+	
+	@Column(columnDefinition="text")
 	private String taskDescription;
+	
 	private LocalDate startDate;
 	private LocalDate endDate;
+	private LocalDate openDate;
 	private double taskFunding;
 	private double taskPenalty;
 	
 	public LeadwayTask() { }
+
 	
 	public LeadwayTask(String taskName, int taskType, String taskDescription, LocalDate startDate, LocalDate endDate,
-			double taskFunding, double taskPenalty) {
+			LocalDate openDate, double taskFunding, double taskPenalty) {
 		super();
 		this.taskName = taskName;
 		this.taskType = taskType;
 		this.taskDescription = taskDescription;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.openDate = openDate;
 		this.taskFunding = taskFunding;
 		this.taskPenalty = taskPenalty;
 	}
-	
+
+
+	public LocalDate getOpenDate() {
+		return openDate;
+	}
+
+	public void setOpenDate(LocalDate openDate) {
+		this.openDate = openDate;
+	}
+
 	public Long getId() {
 		return id;
 	}

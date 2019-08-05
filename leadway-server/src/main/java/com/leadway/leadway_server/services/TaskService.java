@@ -1,6 +1,7 @@
 package com.leadway.leadway_server.services;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,10 @@ public class TaskService {
 		ObjectNode result = mapper.createObjectNode();
 		
 		LeadwayTask newTask = mapper.readValue(requestJson, LeadwayTask.class);
+		
+		LocalDate currentDate = LocalDate.now();
+		newTask.setOpenDate(currentDate);
+		
 		taskRepo.save(newTask);
 		
 		result.put("code", 0);

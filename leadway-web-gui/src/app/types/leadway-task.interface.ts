@@ -1,11 +1,13 @@
 export interface LeadwayTask extends Readonly<{
   id: number;
+  taskName: string;
   taskDescription: string;
   taskFunding: number;
   taskPenalty: number;
   taskType: number;
   startDate: Array<number>;
   endDate: Array<number>;
+  openDate: Array<number>;
 }> {}
 
 export interface ListTasksResponse extends Readonly<{

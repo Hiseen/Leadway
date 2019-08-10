@@ -33,16 +33,11 @@ public class AdminTaskController {
 		return taskService.listTasks();
 	}
 	
-	@RequestMapping(method=RequestMethod.POST, value="/api/admin-modify")
-	public ObjectNode modifyTask() {
-		ObjectNode result = new ObjectMapper().createObjectNode();
-		return result;
-	}
-	
 	@RequestMapping(method=RequestMethod.POST, value="/api/admin-delete")
-	public ObjectNode deleteTask() {
-		ObjectNode result = new ObjectMapper().createObjectNode();
-		return result;
+	public ObjectNode deleteTask(@RequestBody String request) throws IOException {
+		ObjectNode requestJson = (ObjectNode) new ObjectMapper().readTree(request);
+		long deleteTaskID = requestJson.get("taskId").asLong();
+		return taskService.deleteTask(deleteTaskID);
 	}
 	
 //	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {

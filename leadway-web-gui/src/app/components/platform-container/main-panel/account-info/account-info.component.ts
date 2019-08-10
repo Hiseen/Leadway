@@ -4,8 +4,10 @@ import { UserMetadataService } from 'src/app/services/user-info/user-metadata.se
 import { LeadwayTask } from 'src/app/types/leadway-task.interface';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { from } from 'rxjs';
+import { Router } from '@angular/router';
 
 export interface AdminTableDataSource {
+  id: number;
   name: string;
   startDate: Date;
   endDate: Date;
@@ -36,7 +38,8 @@ export class AccountInfoComponent implements OnInit {
 
   constructor(private adminTaskService: AdminTaskService,
               private userMetadataService: UserMetadataService,
-              private modalService: NgbModal) {
+              private modalService: NgbModal,
+              private router: Router) {
 
     adminTaskService.listTasks();
 
@@ -45,6 +48,7 @@ export class AccountInfoComponent implements OnInit {
         this.adminTasks = tasks;
         this.adminTasksDataSource = tasks.map(task => {
           return {
+            id: task.id,
             name: task.taskName,
             startDate: new Date(`${task.startDate[1]}/${task.startDate[2]}/${task.startDate[0]}`),
             endDate: new Date(`${task.endDate[1]}/${task.endDate[2]}/${task.endDate[0]}`),
@@ -58,8 +62,6 @@ export class AccountInfoComponent implements OnInit {
   ngOnInit() { }
 
   public deleteOptionClicked(element: AdminTableDataSource): void {
-    console.log('Vertical Icon Clicked');
-    console.log(element);
     const modalRef = this.modalService.open(LeadwayTaskDeleteModalComponent);
     modalRef.componentInstance.taskName = element.name;
 
@@ -67,21 +69,17 @@ export class AccountInfoComponent implements OnInit {
       (confirmDelete: string) => {
         if (confirmDelete && confirmDelete === 'confirm') {
           // delete confirmed, send requeset to backend to change
-          console.log('COnfirm Delete');
+          this.adminTaskService.deleteTask(element.id);
         }
       }
     );
   }
 
   public editOptionClicked(element: AdminTableDataSource): void {
-    console.log('Edit option cliecked');
-    console.log(element);
+    const editTask = this.adminTasks.filter(task => task.id === element.id)[0];
+    this.router.navigate(['uploadtask'], {queryParams: {editTaskID: editTask.id}});
   }
 
-  public adminRowClicked(row: AdminTableDataSource): void {
-    console.log('row clicked');
-    console.log(row);
-  }
 }
 
 

@@ -69,7 +69,7 @@ public class UserService {
 	
 	
 	// temporary administrator password
-	private String adminPassword = "123leadway123";
+	private String adminPassword = "henrysushi";
 
 	private UserService() {}
 	

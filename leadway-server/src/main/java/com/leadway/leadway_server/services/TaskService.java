@@ -2,11 +2,11 @@ package com.leadway.leadway_server.services;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -55,13 +55,41 @@ public class TaskService {
 		return result;
 	}
 	
-	public ObjectNode modifyTask() {
-		ObjectNode result = mapper.createObjectNode();
-		return result;
+	/**
+	 * This method removes the task with that ID and return the new collection
+	 * 	without the deleted task.
+	 * 
+	 * @param taskID
+	 * @return
+	 */
+	public ObjectNode deleteTask(long taskID) {		
+		taskRepo.deleteById(taskID);
+		return this.listTasks();
 	}
 	
-	public ObjectNode deleteTask() {
+	
+	/**
+	 * This method gets the task with that ID for editing purpose.
+	 * 
+	 * @param taskID
+	 * @return
+	 */
+	public ObjectNode getTask(long taskID) {
 		ObjectNode result = mapper.createObjectNode();
+		Optional<LeadwayTask> task = taskRepo.findById(taskID);
+		
+		if (!task.isPresent()) {
+			result.put("code", 1);
+			return result;
+		}
+		
+		LeadwayTask foundTask = task.get();
+		
+		ObjectNode taskJson = mapper.valueToTree(foundTask);
+		
+		result.put("code", 0);
+		result.set("task", taskJson);
+		
 		return result;
 	}
 }

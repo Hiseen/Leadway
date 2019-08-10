@@ -14,6 +14,11 @@ export interface ListTasksResponse extends Readonly<{
   tasks: LeadwayTask[];
 }> {}
 
+export interface GetTaskResponse extends Readonly<{
+  code: number,
+  task?: LeadwayTask
+}> { }
+
 // endDate: (3) [2019, 8, 30]
 // id: 4
 // startDate: (3) [2019, 8, 5]

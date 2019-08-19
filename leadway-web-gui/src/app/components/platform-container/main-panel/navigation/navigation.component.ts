@@ -26,10 +26,7 @@ export class NavigationComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private userSigninService: UserSigninService,
               private router: Router, public userMetadataService: UserMetadataService) {
     this.searchFormGroup = formBuilder.group({
-      query: new FormControl('', Validators.compose([
-
-      ])),
-      location: new FormControl('', Validators.compose([
+      taskQuery: new FormControl('', Validators.compose([
 
       ]))
     });
@@ -63,7 +60,7 @@ export class NavigationComponent implements OnInit {
    *  navigate them to a new search path.
    */
   public submitSearch(): void {
-    if (this.searchFormGroup.get('query').value === '') {
+    if (this.searchFormGroup.get('taskQuery').value === '') {
       return;
     }
     this.router.navigate(['search'], {queryParams: this.searchFormGroup.value});
@@ -86,6 +83,16 @@ export class NavigationComponent implements OnInit {
    */
   public navigateToHome(): void {
     this.router.navigate(['']);
+  }
+
+  /**
+   * Based on which category user has selected, this method will
+   *  navigate to the relative search path.
+   *
+   * @param category category user selected
+   */
+  public categoryNavigate(category: number) {
+    this.router.navigate(['search'], {queryParams: {taskType: category}});
   }
 
 }

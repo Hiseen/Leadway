@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserMetadataService } from 'src/app/services/user-info/user-metadata.service';
 
 @Component({
   selector: 'leadway-landing-page',
@@ -20,8 +19,8 @@ export class LandingPageComponent implements OnInit {
    *
    * @param category category user selected
    */
-  public categoryNavigate(category: string) {
-    this.router.navigate(['search'], {queryParams: {query: category, location: ''}});
+  public categoryNavigate(category: number) {
+    this.router.navigate(['search'], {queryParams: {taskType: category}});
   }
 
 }

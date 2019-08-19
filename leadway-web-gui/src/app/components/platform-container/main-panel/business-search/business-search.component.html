@@ -1,7 +1,17 @@
-<p>business-search works!</p>
-<div>
-  Query: {{currentQuery}}
-</div>
-<div>
-  Location: {{currentLocation}}
+<div class="search-container">
+  <div class="advanced-option-container">
+    <h3>Advanced Options</h3>
+  </div>
+  <div class="search-items-container">
+    <div *ngFor="let task of taskLists" class="search-list-items">
+      <div class="search-item">
+        <b>{{task.taskName}}</b>
+        <div>{{task.taskType}}</div>
+        <div>{{task.taskAddress}}</div>
+        <div>{{task.taskSummary}}</div>
+        <div>{{task.taskStart}}</div>
+        <div>{{task.taskEnd}}</div>
+      </div>
+    </div>
+  </div>
 </div>

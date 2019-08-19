@@ -36,7 +36,19 @@ export class AdminUploadComponent implements OnInit {
       ])),
       taskDescription: new FormControl(),
       taskType: new FormControl('1'),
-      taskName: new FormControl('henryTest')
+      taskName: new FormControl('henryTest'),
+      taskStreet: new FormControl('', Validators.compose([
+        Validators.required
+      ])),
+      taskCity: new FormControl('', Validators.compose([
+        Validators.required
+      ])),
+      taskState: new FormControl('', Validators.compose([
+        Validators.required
+      ])),
+      taskZip: new FormControl('', Validators.compose([
+        Validators.required
+      ]))
     });
 
     // event when the router navigate to this component path

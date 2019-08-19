@@ -8,6 +8,10 @@ export interface LeadwayTask extends Readonly<{
   startDate: Array<number>;
   endDate: Array<number>;
   openDate: Array<number>;
+  taskStreet: string;
+  taskCity: string;
+  taskState: string;
+  taskZip: number;
 }> {}
 
 export interface ListTasksResponse extends Readonly<{

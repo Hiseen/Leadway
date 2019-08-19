@@ -60,6 +60,34 @@
                   </mat-error>
                 </mat-form-field>
             </div>
+            <div class="field-group">
+              <mat-form-field appearance="outline">
+                <mat-label>街道</mat-label>
+                <input matInput placeholder="街道" type="text" name="taskStreet" formControlName="taskStreet" required>
+                <mat-error *ngIf="!taskFormGroup.get('taskStreet').hasError('pattern') && !taskFormGroup.get('taskStreet').hasError('required')">
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>城市</mat-label>
+                <input matInput placeholder="城市" type="text" name="taskCity" formControlName="taskCity" required>
+                <mat-error *ngIf="!taskFormGroup.get('taskCity').hasError('pattern') && !taskFormGroup.get('taskCity').hasError('required')">
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="field-group">
+              <mat-form-field appearance="outline">
+                <mat-label>省</mat-label>
+                <input matInput placeholder="省" type="text" name="taskState" formControlName="taskState" required>
+                <mat-error *ngIf="!taskFormGroup.get('taskState').hasError('pattern') && !taskFormGroup.get('taskState').hasError('required')">
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>郵政編碼</mat-label>
+                <input matInput placeholder="郵政編碼" type="number" name="taskZip" formControlName="taskZip" required>
+                <mat-error *ngIf="!taskFormGroup.get('taskZip').hasError('pattern') && !taskFormGroup.get('taskZip').hasError('required')">
+                </mat-error>
+              </mat-form-field>
+            </div>
 
             <button class="submit-button" mat-stroked-button type="submit" (click)="createNewTask()" [disabled]="!taskFormGroup.valid">
               <span>提交</span>

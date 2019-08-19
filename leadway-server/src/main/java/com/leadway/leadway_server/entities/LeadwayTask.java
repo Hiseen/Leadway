@@ -8,11 +8,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
+@Getter @Setter @NoArgsConstructor
 public class LeadwayTask {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Setter(AccessLevel.PROTECTED)
 	private Long id;
 	
 	private String taskName;
@@ -27,11 +34,14 @@ public class LeadwayTask {
 	private double taskFunding;
 	private double taskPenalty;
 	
-	public LeadwayTask() { }
-
-	
+	private String taskStreet;
+	private String taskCity;
+	private String taskState;
+	private double taskZip;
+		
 	public LeadwayTask(String taskName, int taskType, String taskDescription, LocalDate startDate, LocalDate endDate,
-			LocalDate openDate, double taskFunding, double taskPenalty) {
+			LocalDate openDate, double taskFunding, double taskPenalty, String taskStreet, String taskCity,
+			String taskState, double taskZip) {
 		super();
 		this.taskName = taskName;
 		this.taskType = taskType;
@@ -41,68 +51,10 @@ public class LeadwayTask {
 		this.openDate = openDate;
 		this.taskFunding = taskFunding;
 		this.taskPenalty = taskPenalty;
+		this.taskStreet = taskStreet;
+		this.taskCity = taskCity;
+		this.taskState = taskState;
+		this.taskZip = taskZip;
 	}
-
-
-	public LocalDate getOpenDate() {
-		return openDate;
-	}
-
-	public void setOpenDate(LocalDate openDate) {
-		this.openDate = openDate;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getTaskName() {
-		return taskName;
-	}
-	public void setTaskName(String taskName) {
-		this.taskName = taskName;
-	}
-	public int getTaskType() {
-		return taskType;
-	}
-	public void setTaskType(int taskType) {
-		this.taskType = taskType;
-	}
-	public String getTaskDescription() {
-		return taskDescription;
-	}
-	public void setTaskDescription(String taskDescription) {
-		this.taskDescription = taskDescription;
-	}
-	public LocalDate getStartDate() {
-		return startDate;
-	}
-	public void setStartDate(LocalDate startDate) {
-		this.startDate = startDate;
-	}
-	public LocalDate getEndDate() {
-		return endDate;
-	}
-	public void setEndDate(LocalDate endDate) {
-		this.endDate = endDate;
-	}
-	public double getTaskFunding() {
-		return taskFunding;
-	}
-	public void setTaskFunding(double taskFunding) {
-		this.taskFunding = taskFunding;
-	}
-	public double getTaskPenalty() {
-		return taskPenalty;
-	}
-	public void setTaskPenalty(double taskPenalty) {
-		this.taskPenalty = taskPenalty;
-	} 
-
-	
 	
 }

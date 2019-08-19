@@ -88,7 +88,7 @@
 .form-container {
   border-radius: 5px;
   border: 2px solid grey;
-  width: 100%;
+  width: 80%;
   margin: auto;
 }
 
@@ -102,6 +102,10 @@
     grid-row-end: 2;
     grid-column-start: 1;
     grid-column-end: 4;
+  }
+
+  .form-container{
+    width: 100%;
   }
 }
 
@@ -130,4 +134,7 @@
 .navigation-logo:hover {
   cursor: pointer;
   color: #f5f5f5 !important;
+}
+.search-bar-dropdown {
+  color: white;
 }

@@ -15,6 +15,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import com.leadway.leadway_server.constants.LeadwayConstants;
 import com.leadway.leadway_server.entities.AdminUser;
 import com.leadway.leadway_server.entities.AutoLoginData;
 import com.leadway.leadway_server.entities.EnterpriseUser;
@@ -63,11 +64,12 @@ public class UserService {
 	@Autowired
 	private EncryptionService encryptionService;
 	
-	// temporary variable to prevent email authentication every single time
-	private boolean isDeveloping = false;
+	@Autowired
+	private CookieService cookieService;
+	
 	
 	// temporary administrator password
-	private String adminPassword = "123leadway123";
+	private String adminPassword = "henrysushi";
 
 	private UserService() {}
 	
@@ -118,7 +120,7 @@ public class UserService {
 		
 		newUser.setVerified(false);
 		
-		if (isDeveloping) {
+		if (LeadwayConstants.isDeveloping) {
 			newUser.setVerified(true);
 		}
 		
@@ -127,7 +129,7 @@ public class UserService {
 		// generates user entity based on the user type (regular, expert, enterprise, admin)
 		this.generateUserType(newUser.getId(), userType, signUpForm);
 
-		if (!isDeveloping) {
+		if (!LeadwayConstants.isDeveloping) {
 			try {
 				mailService.sendVerificationMailTo(userEmail, encryptionService.AESEncrypt(newUser.getId().toString()));
 			} catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException
@@ -197,7 +199,7 @@ public class UserService {
 			return result;
 		} else {
 			LeadwayUser foundUser = users.get(0);
-			if (!isDeveloping && !foundUser.isVerified()) {
+			if (!LeadwayConstants.isDeveloping && !foundUser.isVerified()) {
 				result.put("code", 1);
 				result.put("error", "account is not verified yet");
 				return result;
@@ -232,16 +234,73 @@ public class UserService {
 			
 			// set cookie for the request, 60 * 60 = 1 hour (only for not remembered cookie)
 			int cookieExpiryDate = 60 * 60;
-			this.setTokenCookie(httpResponse, saltedToken, rememberMe, cookieExpiryDate);
+			cookieService.setTokenCookie(httpResponse, saltedToken, rememberMe, cookieExpiryDate);
 
-			// all requests afterwards uses userID (and use cookie for verification)
-			result.put("userID", foundUser.getId());
+			result.set("userInfo", this.gatherLoginInfo(foundUser));
 			
 			return result;
 		}
 	}
+	
+	/**
+	 * This function will gather the information needed for the frontend
+	 * 	when the user login into the leadway main platform.
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public ObjectNode gatherLoginInfo(LeadwayUser user) {
+		ObjectNode userInfoObject = new ObjectMapper().createObjectNode();
+		String email = user.getEmail();
+		int type = user.getType();
+		Long userID = user.getId();
+		
+		StringBuilder nameBuilder = new StringBuilder();
+		if (type == 2) {
+			Optional<EnterpriseUser> ent = enterpriseUserRepo.findById(userID);
+			if (!ent.isPresent()) {
+				throw new Error("Enterprise cannot be found during signin");
+			}
+			nameBuilder.append(ent.get().getCompanyName());
+		} else {
+			if (type == 0) {
+				Optional<RegularUser> reg = regularUserRepo.findById(userID);
+				if (!reg.isPresent()) {
+					throw new Error("Regular user cannot be found during signin");
+				}
+				RegularUser regUser = reg.get();
+				nameBuilder.append(regUser.getFirstName() + " " + regUser.getLastName());
+			} else if (type == 1) {
+				Optional<ExpertUser> expert = expertUserRepo.findById(userID);
+				if (!expert.isPresent()) {
+					throw new Error("Regular user cannot be found during signin");
+				}
+				ExpertUser expertUser = expert.get();
+				nameBuilder.append(expertUser.getFirstName() + " " + expertUser.getLastName());
+			} else {
+				Optional<AdminUser> admin = adminUserRepo.findById(userID);
+				if (!admin.isPresent()) {
+					throw new Error("Regular user cannot be found during signin");
+				}
+				AdminUser adminUser = admin.get();
+				nameBuilder.append(adminUser.getFirstName() + " " + adminUser.getLastName());
+			}
+		}
+		
+		
+		userInfoObject.put("email", email);
+		userInfoObject.put("type", type);
+		userInfoObject.put("name", nameBuilder.toString());
+		
+		// all requests afterwards uses userID (and use cookie for verification)
+		userInfoObject.put("userID", userID);
 
-	public ObjectNode verifyUser(String code) throws BadPaddingException, IllegalBlockSizeException, DecoderException, UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+		return userInfoObject;
+	}
+
+	public ObjectNode verifyUser(String code) throws BadPaddingException, IllegalBlockSizeException, 
+			DecoderException, UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, 
+			NoSuchPaddingException, InvalidAlgorithmParameterException {
 		ObjectNode result = new ObjectMapper().createObjectNode();
 		String decrypted = encryptionService.AESDecrypt(code);
 		System.out.println("IN VERIFY, encrypted = " + code);
@@ -276,35 +335,26 @@ public class UserService {
 		return result;
 	}
 	
+	/**
+	 * Logout from Leadway platform by removing the entity in the auto login repository
+	 * 	and removing the cookie stored inside the http response.
+	 * 
+	 * @param logoutInfo
+	 * @param httpResponse
+	 * @return
+	 * @throws BadPaddingException
+	 * @throws IllegalBlockSizeException
+	 * @throws DecoderException
+	 */
 	public ObjectNode logoutUser(ObjectNode logoutInfo, HttpServletResponse httpResponse) 
 			throws BadPaddingException, IllegalBlockSizeException, DecoderException {
 		ObjectNode result = new ObjectMapper().createObjectNode();
 		long userID = logoutInfo.get("id").asLong();
-//		String saltedToken = logoutInfo.get("token").asText();
 				
 		autoLoginDataRepository.deleteById(userID);
-		this.removeTokenCookie(httpResponse, "");
+		cookieService.removeTokenCookie(httpResponse, "");
 		
 		result.put("code", 0);
-		
 		return result;
-	}
-
-	private void setTokenCookie(HttpServletResponse httpResponse, String token, boolean rememberMe, int expiry) {
-		Cookie cookie = new Cookie("token", token);
-		// if remember me is not selected when login, cookie will expire, else the cookie is permanent
-		if (!rememberMe) {
-			cookie.setMaxAge(expiry);			
-		}
-		//cookie.setSecure(true);  // requires HTTPS?
-		cookie.setPath("/"); // work for whole domain
-		httpResponse.addCookie(cookie);
-	}
-	
-	private void removeTokenCookie(HttpServletResponse httpResponse, String token) {
-		Cookie cookie = new Cookie("token", token);
-		cookie.setMaxAge(0);		
-		cookie.setPath("/"); // work for whole domain
-		httpResponse.addCookie(cookie);
 	}
 }

@@ -1,0 +1,87 @@
+.account-info-container {
+  min-width: 100%;
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  background-color: #f5f5f5;
+
+  padding: 50px 180px;
+}
+
+.info-section-container {
+  padding: 35px;
+  background-color: white;
+  box-shadow: 2px 2px #888888;
+  border-radius: 5px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+
+.edit-profile-button {
+  border-radius: 50%;
+}
+
+
+.adminTaskTable {
+  width: 100%;
+}
+
+.dropdown-menu {
+  position: absolute;
+  left: 0;
+  top:0;
+}
+
+.icon-button {
+  background-color: transparent;
+  border-radius: 50%;
+  border: 0px;
+  padding: 7px;
+  line-height: 1;
+}
+
+.icon-button:hover {
+  background-color: #d9d9d9;
+}
+
+.edit-button {
+  color: #0066ff
+}
+
+.delete-button {
+  color: #ff4d4d
+}
+
+.mat-row {
+  border-radius: 5px;
+}
+
+.mat-row:hover {
+  background-color: #e6f2ff;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 920px) {
+  .account-info-container {
+    padding: 50px 100px;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .account-info-container {
+    padding: 50px 70px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .account-info-container {
+    padding: 50px 30px;
+  }
+}

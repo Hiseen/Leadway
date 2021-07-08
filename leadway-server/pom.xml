@@ -40,6 +40,11 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
+    
+    <dependency>
+	    <groupId>com.fasterxml.jackson.datatype</groupId>
+	    <artifactId>jackson-datatype-jsr310</artifactId>
+	</dependency>
    	
 	<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 	<dependency>
@@ -51,11 +56,17 @@
 	    <artifactId>commons-codec</artifactId>
 	    <version>1.9</version>
 	</dependency>
-      <dependency>
+    <dependency>
           <groupId>javax.mail</groupId>
           <artifactId>mail</artifactId>
           <version>1.5.0-b01</version>
-      </dependency>
+    </dependency>
+    <dependency>
+		<groupId>org.projectlombok</groupId>
+		<artifactId>lombok</artifactId>
+		<version>1.18.8</version>
+		<scope>provided</scope>
+	</dependency>
   </dependencies>
   
   	<!-- Package as an executable jar -->

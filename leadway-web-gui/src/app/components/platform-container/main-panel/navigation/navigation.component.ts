@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { UserSigninService } from 'src/app/services/login/user-signin.service';
 import { Router } from '@angular/router';
+import { UserMetadataService } from 'src/app/services/user-info/user-metadata.service';
 
 @Component({
   selector: 'leadway-navigation',
@@ -10,18 +11,22 @@ import { Router } from '@angular/router';
 })
 export class NavigationComponent implements OnInit {
 
-  public userInitial = 'W';
-  public showHiddenSearchBar = false;
+  // gather user information stored when login
+  public userInformation = this.userMetadataService.getUserInfo();
 
+  // fetch basic information from the user info to display on the navigation
+  public userInitial = this.userInformation.name.charAt(0).toUpperCase();
+  public userName = this.userInformation.name;
+  public userEmail = this.userInformation.email;
+  public userType = this.userInformation.type;
+
+  public showHiddenSearchBar = false;
   public searchFormGroup: FormGroup;
 
   constructor(private formBuilder: FormBuilder, private userSigninService: UserSigninService,
-              private router: Router) {
+              private router: Router, public userMetadataService: UserMetadataService) {
     this.searchFormGroup = formBuilder.group({
-      query: new FormControl('', Validators.compose([
-
-      ])),
-      location: new FormControl('', Validators.compose([
+      taskQuery: new FormControl('', Validators.compose([
 
       ]))
     });
@@ -55,10 +60,39 @@ export class NavigationComponent implements OnInit {
    *  navigate them to a new search path.
    */
   public submitSearch(): void {
-    if (this.searchFormGroup.get('query').value === '') {
+    if (this.searchFormGroup.get('taskQuery').value === '') {
       return;
     }
     this.router.navigate(['search'], {queryParams: this.searchFormGroup.value});
+  }
+
+  /**
+   * This navigates the admin user to the uploadtask form page
+   */
+  public adminUploadClick(): void {
+    if (this.userType !== 3) {
+      return;
+    }
+    // console.log('Navigate to admin upload form page');
+    this.router.navigate(['uploadtask']);
+  }
+
+  /**
+   * This method will navigate back to the home page when the
+   *  user clicks the website icon / title on the top-left.
+   */
+  public navigateToHome(): void {
+    this.router.navigate(['']);
+  }
+
+  /**
+   * Based on which category user has selected, this method will
+   *  navigate to the relative search path.
+   *
+   * @param category category user selected
+   */
+  public categoryNavigate(category: number) {
+    this.router.navigate(['search'], {queryParams: {taskType: category}});
   }
 
 }

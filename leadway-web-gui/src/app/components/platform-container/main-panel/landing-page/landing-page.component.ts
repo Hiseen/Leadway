@@ -19,8 +19,8 @@ export class LandingPageComponent implements OnInit {
    *
    * @param category category user selected
    */
-  public categoryNavigate(category: string) {
-    this.router.navigate(['search'], {queryParams: {query: category, location: ''}});
+  public categoryNavigate(category: number) {
+    this.router.navigate(['search'], {queryParams: {taskType: category}});
   }
 
 }

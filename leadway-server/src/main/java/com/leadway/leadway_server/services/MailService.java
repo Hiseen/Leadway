@@ -3,6 +3,8 @@ package com.leadway.leadway_server.services;
 
 import org.springframework.stereotype.Component;
 
+import com.leadway.leadway_server.constants.LeadwayConstants;
+
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -31,6 +33,10 @@ public class MailService {
     }
 
     void sendVerificationMailTo(String email, String verificationCode)throws MessagingException {
+    	if (LeadwayConstants.isDeveloping) {
+    		// if it is in development mode, dont send the email.
+    		return;
+    	}
         MimeMessage message = new MimeMessage(mailSession);
         message.setFrom(new InternetAddress(senderEmail));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));

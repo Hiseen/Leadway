@@ -17,8 +17,12 @@ import org.apache.commons.codec.DecoderException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.leadway.leadway_server.entities.AutoLoginData;
+import com.leadway.leadway_server.entities.LeadwayUser;
 import com.leadway.leadway_server.repositories.AutoLoginDataRepository;
+import com.leadway.leadway_server.repositories.UserRepository;
 
 @Component
 public class UserAuthenticationService {
@@ -29,7 +33,18 @@ public class UserAuthenticationService {
 	@Autowired
 	private AutoLoginDataRepository autoLoginDataRepository;
 	
-	public boolean verifyToken(String frontEndToken, HttpServletResponse httpResponse)  {
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private CookieService cookieService;
+	
+	@Autowired
+	private UserService userService;
+	
+	public ObjectNode verifyToken(String frontEndToken, HttpServletResponse httpResponse)  {
+		
+		ObjectNode result = new ObjectMapper().createObjectNode();
 		
 		String decryptedToken;
 		try {
@@ -37,17 +52,26 @@ public class UserAuthenticationService {
 		} catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException
 				| NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException
 				| DecoderException e) {
-			return false;
+			
+			result.put("verified", false);
+			return result;
 		}
 		
 		String[] splitedToken = decryptedToken.split(":");
 		
-//		System.out.println("Splited token 0 = " + splitedToken[0]);
-//		System.out.println("Splited token 1 = " + splitedToken[1]);
 		
 		Long id = Long.parseLong(splitedToken[0]);
 		Long token = Long.parseLong(splitedToken[1]);
 		Optional<AutoLoginData> data = autoLoginDataRepository.findById(id);
+		
+		Optional<LeadwayUser> userInfo = userRepository.findById(id);
+		if (!userInfo.isPresent()) {
+			result.put("verified", false);
+			return result;
+		}
+		
+		LeadwayUser user = userInfo.get();
+		
 		if (data.isPresent() && data.get().getToken().equals(token)) {
 			AutoLoginData currentLoginData = data.get();
 			if (data.get().getExpirationTime() > System.currentTimeMillis()) {
@@ -62,26 +86,22 @@ public class UserAuthenticationService {
 				currentLoginData.setExpirationTime(System.currentTimeMillis() + expirationTime);
 				autoLoginDataRepository.save(currentLoginData);
 				
-				this.setTokenCookie(httpResponse, frontEndToken, rememberMe, 60 * 60);
-				return true;	
+				cookieService.setTokenCookie(httpResponse, frontEndToken, rememberMe, 60 * 60);
+
+				result.put("verified", true);
+				result.set("userInfo", userService.gatherLoginInfo(user));
+				return result;
 			} else {
 				// expired data is deleted
 				autoLoginDataRepository.deleteById(currentLoginData.getId());
-				return false;
+
+				result.put("verified", false);
+				return result;
 			}
 		}
 		
-		return false;
-	}
-	
-	private void setTokenCookie(HttpServletResponse httpResponse, String token, boolean rememberMe, int expiry) {
-		Cookie cookie = new Cookie("token", token);
-		// if remember me is not selected when login, cookie will expire, else the cookie is permanent
-		if (!rememberMe) {
-			cookie.setMaxAge(expiry);			
-		}
-		//cookie.setSecure(true);  // requires HTTPS?
-		cookie.setPath("/"); // work for whole domain
-		httpResponse.addCookie(cookie);
+
+		result.put("verified", false);
+		return result;
 	}
 }

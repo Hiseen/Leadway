@@ -3,6 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Rout
 import { Observable } from 'rxjs';
 import { UserAuthService } from '../services/user-auth/user-auth.service';
 import { map } from 'rxjs/operators';
+import { UserMetadataService } from '../services/user-info/user-metadata.service';
 
 /**
  * This guard is mainly used for pages before user has
@@ -18,7 +19,8 @@ import { map } from 'rxjs/operators';
 })
 export class AutoLoginGuard implements CanActivate {
 
-  constructor(private router: Router, private userAuthService: UserAuthService) {}
+  constructor(private router: Router, private userAuthService: UserAuthService,
+              private userMetadataService: UserMetadataService) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -32,10 +34,15 @@ export class AutoLoginGuard implements CanActivate {
 
     const verification = this.userAuthService.getTokenVerificationStream()
       .pipe(
-        map(verified => {
+        map(verifiedJson => {
           // if tokenID is incorrect, then stay at sign-in page, else (token id is
           //  correct) go to main page
-          if (!verified) { return true; }
+          if (!verifiedJson.verified) {
+            localStorage.removeItem('tokenID');
+            return true;
+          }
+          // grab the user info before navigating
+          this.userMetadataService.setUserInfo(verifiedJson.userInfo);
           this.router.navigate(['']);
           return false;
         })

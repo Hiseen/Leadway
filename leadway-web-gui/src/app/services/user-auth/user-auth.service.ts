@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable, Subject } from 'rxjs';
+import { VerificationResponse } from 'src/app/types/user-verification.interface';
 // import { map } from 'rxjs/operators';
 
 export const USER_AUTHENTICATION_ENDPOINT = 'user-auth';
@@ -11,11 +12,11 @@ export const USER_AUTHENTICATION_ENDPOINT = 'user-auth';
 })
 export class UserAuthService {
 
-  private tokenVerificationStream = new Subject<boolean> ();
+  private tokenVerificationStream = new Subject<VerificationResponse> ();
 
   constructor(private http: HttpClient) { }
 
-  public getTokenVerificationStream(): Observable<boolean> {
+  public getTokenVerificationStream(): Observable<VerificationResponse> {
     return this.tokenVerificationStream.asObservable();
   }
 
@@ -35,9 +36,9 @@ export class UserAuthService {
    *
    * @param tokenID token ID
    */
-  private checkValidTokenID(tokenID: string): Observable<boolean> {
+  private checkValidTokenID(tokenID: string): Observable<VerificationResponse> {
     const requestURL = `${environment.apiUrl}/${USER_AUTHENTICATION_ENDPOINT}`;
-    return this.http.post<boolean>(
+    return this.http.post<VerificationResponse>(
       requestURL,
       JSON.stringify({token: tokenID}),
       {
